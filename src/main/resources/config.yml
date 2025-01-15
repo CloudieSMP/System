@@ -1,10 +1,2 @@
 messages:
-  welcome: "Welcome back, {player}!"
-home:
-  teleport_delay: 2
-warp:
-  teleport_delay: 2
-tpa:
-  teleport_delay: 2
-marry:
-  teleport_delay: 2
+  welcome: "Welcome to Cloudie SMP S9, {player}!"
