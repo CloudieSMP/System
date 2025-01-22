@@ -1,4 +1,4 @@
-name: system
+name: System
 version: ${version}
 main: moe.sebiann.system.System
 api-version: '1.21.4'

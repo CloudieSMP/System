@@ -47,6 +47,7 @@ public class System extends JavaPlugin {
         manager.registerCommand(new ReskinCommand());
         manager.registerCommand(new PissCommand());
         manager.registerCommand(new RulesCommand());
+        manager.registerCommand(new RulesCommand());
 
         //if renameCommands are enabled
         if(getConfig().getBoolean("ShortenCommands")){
