@@ -16,6 +16,16 @@ public class HexToRGB {
             }
 
             return rgb;
+        } else if (hex.length() == 6) {
+            try {
+                rgb[0] = Integer.parseInt(hex.substring(0, 2), 16);
+                rgb[1] = Integer.parseInt(hex.substring(2, 4), 16);
+                rgb[2] = Integer.parseInt(hex.substring(4, 6), 16);
+            } catch (NumberFormatException var3) {
+                var3.printStackTrace();
+            }
+
+            return rgb;
         } else {
             throw new IllegalArgumentException("Invalid HEX format. It should be in the format #RRGGBB.");
         }
