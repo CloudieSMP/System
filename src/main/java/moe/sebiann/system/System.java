@@ -59,7 +59,7 @@ public class System extends JavaPlugin {
 
     void registerEvents() {
         // this one is for saying welcome
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(getConfig()), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 
         // this one is for invisible Item Frames
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
