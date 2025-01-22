@@ -2,17 +2,6 @@ name: system
 version: ${version}
 main: moe.sebiann.system.System
 api-version: '1.21.4'
-load: POSTWORLD
 authors: [ Sebastian, Beauver ]
 website: sebiann.moe
 prefix: CloudieSystem
-permissions :
-  system.admin.reload:
-    description: "Permission to reload the plugin"
-    default: false
-commands:
-  system:
-    description: "Reload the plugin configuration."
-    usage: "/system <reload>"
-    permission: system.admin.reload
-depend: [Vault] # Vault is essential for handling permissions and economy. Ensure it is mentioned in the plugin documentation.

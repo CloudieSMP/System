@@ -1,4 +1,4 @@
-package moe.sebiann.system.events;
+package moe.sebiann.system.listeners;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.FileConfiguration;

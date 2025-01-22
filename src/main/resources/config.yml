@@ -1,2 +1,15 @@
 messages:
   welcome: "Welcome to Cloudie SMP S9, {player}!"
+skins:
+  - cat_ears
+  - dog_ears
+  - fox_ears
+  - cool_glasses
+  - heart_glasses
+  - orchid_crown
+  - heart_crown
+#Auto restart time 24:00 input:
+autorestart: 08:00
+#Sections, these can be disabled or enabled. Disabling or re-enabling requires a server restart.
+#These are commands such as: gmc,
+ShortenCommands: true

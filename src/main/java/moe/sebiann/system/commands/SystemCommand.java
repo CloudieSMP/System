@@ -1,32 +1,24 @@
 package moe.sebiann.system.commands;
+import moe.sebiann.system.System;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class SystemCommand implements CommandExecutor {
+@CommandAlias("system")
+public class SystemCommand extends BaseCommand {
 
-    private final JavaPlugin plugin;
-
-    public SystemCommand(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("system.admin.reload")) {
-            sender.sendMessage("§cYou do not have permission to use this command.");
-            return true;
-        }
-
-        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
-            plugin.reloadConfig();
-            sender.sendMessage("§aSystem configuration reloaded successfully!");
-        } else {
-            sender.sendMessage("§cUsage: /system reload");
-        }
-
-        return true;
+    @Default
+    @Subcommand("reload")
+    @CommandPermission("system.admin.reload")
+    public void reload(CommandSender sender) {
+        System.plugin.reloadConfig();
+        sender.sendMessage(Component.text("System configuration reloaded successfully!")
+                .color(TextColor.fromHexString("#55FF55")));
     }
 }
