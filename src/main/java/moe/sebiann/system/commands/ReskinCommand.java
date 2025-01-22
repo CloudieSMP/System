@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CommandAlias("reskin")
@@ -21,7 +22,7 @@ public class ReskinCommand extends BaseCommand {
                     .color(TextColor.fromHexString("#FF5555")));
             return;
         }
-        List<String> validOptions = System.plugin.getConfig().getStringList("skins");
+        List<String> validOptions = new ArrayList<>(System.plugin.getConfig().getStringList("skins"));
         // Validate the option
         if (option == null || !validOptions.contains(option)) {
             player.sendMessage(Component.text("Invalid or missing option. Valid options: " + String.join(", ", validOptions))
