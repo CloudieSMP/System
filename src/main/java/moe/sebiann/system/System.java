@@ -46,8 +46,7 @@ public class System extends JavaPlugin {
         manager.registerCommand(new FlyCommand());
         manager.registerCommand(new ReskinCommand());
         manager.registerCommand(new PissCommand());
-        manager.registerCommand(new RulesCommand());
-        manager.registerCommand(new RulesCommand());
+        manager.registerCommand(new RulesGUICommand());
 
         //if renameCommands are enabled
         if(getConfig().getBoolean("ShortenCommands")){
@@ -58,15 +57,12 @@ public class System extends JavaPlugin {
     }
 
     void registerEvents() {
-        // this one is for saying welcome
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-
-        // this one is for invisible Item Frames
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new FlyListener(), this);
+        getServer().getPluginManager().registerEvents(new RulesGUICommand(), this);
 
-        this.getServer().getPluginManager().registerEvents(new FlyListener(), this);
-
-        getLogger().info("|   Enabled listeners                                    |");
+    getLogger().info("|   Enabled listeners                                    |");
 
     }
     void registerClasses() {
