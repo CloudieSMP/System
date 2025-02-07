@@ -1,4 +1,4 @@
-# Seb's System Plugin
+# CloudSystem Plugin
 
 Cool Paper plugin
 
