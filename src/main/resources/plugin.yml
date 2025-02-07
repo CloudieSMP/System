@@ -3,5 +3,5 @@ version: ${version}
 main: cloud.cloudie.cloudsystem.CloudSystem
 api-version: '1.21.4'
 authors: [ Sebastian, Beauver ]
-website: sebiann.moe
+website: https://cloudiesmp.github.io/
 prefix: CloudieSystem
