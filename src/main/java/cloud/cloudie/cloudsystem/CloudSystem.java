@@ -11,6 +11,7 @@ import cloud.cloudie.cloudsystem.listeners.PlayerInteractListener;
 import cloud.cloudie.cloudsystem.listeners.PlayerJoinListener;
 import cloud.cloudie.cloudsystem.util.AutoRestart;
 
+import cloud.cloudie.cloudsystem.util.UpdateChecker;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,6 +44,7 @@ public class CloudSystem extends JavaPlugin {
         registerCommands();
         registerEvents();
         commandCompletions();
+        new UpdateChecker(this).checkForUpdates();
 
         getLogger().info("|                                                        |");
         getLogger().info("|-----------------------------[ ENABLED SUCCESSFULLY ]---|");
