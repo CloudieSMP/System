@@ -1,8 +1,15 @@
-package moe.sebiann.system;
+package cloud.cloudie.cloudsystem;
 
-import moe.sebiann.system.commands.*;
-import moe.sebiann.system.listeners.*;
-import moe.sebiann.system.util.*;
+import cloud.cloudie.cloudsystem.commands.FlyCommand;
+import cloud.cloudie.cloudsystem.commands.PissCommand;
+import cloud.cloudie.cloudsystem.commands.ReskinCommand;
+import cloud.cloudie.cloudsystem.commands.RulesGUICommand;
+import cloud.cloudie.cloudsystem.commands.ShortenCommands;
+import cloud.cloudie.cloudsystem.commands.SystemCommand;
+import cloud.cloudie.cloudsystem.listeners.FlyListener;
+import cloud.cloudie.cloudsystem.listeners.PlayerInteractListener;
+import cloud.cloudie.cloudsystem.listeners.PlayerJoinListener;
+import cloud.cloudie.cloudsystem.util.AutoRestart;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
@@ -14,9 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class System extends JavaPlugin {
+public class CloudSystem extends JavaPlugin {
 
-    public static System plugin = null;
+    public static CloudSystem plugin = null;
     PaperCommandManager manager;
     public static Map<UUID, BukkitTask> particleTasks = new HashMap<>();
 

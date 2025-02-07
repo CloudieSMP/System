@@ -1,4 +1,4 @@
-package moe.sebiann.system.util;
+package cloud.cloudie.cloudsystem.util;
 
 public class HexToRGB {
     public HexToRGB() {

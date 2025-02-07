@@ -1,6 +1,6 @@
-package moe.sebiann.system.util;
+package cloud.cloudie.cloudsystem.util;
 
-import moe.sebiann.system.System;
+import cloud.cloudie.cloudsystem.CloudSystem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -17,7 +17,7 @@ public class AutoRestart {
     private static BukkitTask schedulerTask;
 
     public static void onAutoRestart() {
-        Plugin plugin = System.plugin;
+        Plugin plugin = CloudSystem.plugin;
         String restartTime = plugin.getConfig().getString("autorestart");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");

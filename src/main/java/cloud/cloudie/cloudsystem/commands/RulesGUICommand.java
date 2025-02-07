@@ -1,4 +1,4 @@
-package moe.sebiann.system.commands;
+package cloud.cloudie.cloudsystem.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;

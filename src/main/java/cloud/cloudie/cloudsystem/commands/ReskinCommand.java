@@ -1,5 +1,5 @@
-package moe.sebiann.system.commands;
-import moe.sebiann.system.System;
+package cloud.cloudie.cloudsystem.commands;
+import cloud.cloudie.cloudsystem.CloudSystem;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
@@ -22,7 +22,7 @@ public class ReskinCommand extends BaseCommand {
                     .color(TextColor.fromHexString("#FF5555")));
             return;
         }
-        List<String> validOptions = new ArrayList<>(System.plugin.getConfig().getStringList("skins"));
+        List<String> validOptions = new ArrayList<>(CloudSystem.plugin.getConfig().getStringList("skins"));
         // Validate the option
         if (option == null || !validOptions.contains(option)) {
             player.sendMessage(Component.text("Invalid or missing option. Valid options: " + String.join(", ", validOptions))

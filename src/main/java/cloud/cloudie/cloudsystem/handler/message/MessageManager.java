@@ -1,14 +1,14 @@
-package moe.sebiann.system.handler.message;
+package cloud.cloudie.cloudsystem.handler.message;
 
-import moe.sebiann.system.System;
-import moe.sebiann.system.enums.Severity;
+import cloud.cloudie.cloudsystem.CloudSystem;
+import cloud.cloudie.cloudsystem.enums.Severity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.plugin.Plugin;
 
 public class MessageManager {
 
-    private static final Plugin plugin = System.plugin;
+    private static final Plugin plugin = CloudSystem.plugin;
     private static final String servername = "[Cloudie SMP - ";
 
     public static Component messageGenerator(Severity severity, String type, String message){
@@ -25,7 +25,7 @@ public class MessageManager {
                 .append(Component.text(message).color(TextColor.fromHexString(hexCode)));
     }
     public static Component messageGenerator(Severity severity, String type, Component component){
-        Plugin plugin = System.plugin;
+        Plugin plugin = CloudSystem.plugin;
 
         if(Severity.severityCheck(severity)){
             return Component.text(servername + type + "]\n").color(TextColor.fromHexString(severity.getHexColor()))

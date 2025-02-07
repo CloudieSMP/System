@@ -1,5 +1,5 @@
-package moe.sebiann.system.commands;
-import moe.sebiann.system.System;
+package cloud.cloudie.cloudsystem.commands;
+import cloud.cloudie.cloudsystem.CloudSystem;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
@@ -22,7 +22,7 @@ public class PissCommand extends BaseCommand {
 
         if (isPublic) {
             // Broadcast to the entire server
-            System.plugin.getServer().broadcast(Component.text(player.getName() + " just marked their territory! 🟡💦"));
+            CloudSystem.plugin.getServer().broadcast(Component.text(player.getName() + " just marked their territory! 🟡💦"));
         } else {
             // Send only to the player
             String[] messages = {
@@ -78,7 +78,7 @@ public class PissCommand extends BaseCommand {
 
                 ticks++;
             }
-        }.runTaskTimer(System.plugin, 0L, 1L);
+        }.runTaskTimer(CloudSystem.plugin, 0L, 1L);
 
         // Add sound effect
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_SPLASH, 1.0F, 1.0F);

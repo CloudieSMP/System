@@ -1,12 +1,12 @@
-package moe.sebiann.system.commands;
+package cloud.cloudie.cloudsystem.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
-import moe.sebiann.system.System;
-import moe.sebiann.system.util.CalculateDates;
+import cloud.cloudie.cloudsystem.CloudSystem;
+import cloud.cloudie.cloudsystem.util.CalculateDates;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextColor;
@@ -52,7 +52,7 @@ public class RestartCommand extends BaseCommand {
                     player1.sendMessage(Component.text("To cancel this restart click here or write: /systemrestart cancel").color(TextColor.fromHexString("#FFAA00")).clickEvent(ClickEvent.runCommand("/systemrestart cancel")));
                 }
                 CountdownTask countdownTask = new CountdownTask(durationInSeconds);
-                countdownTask.runTaskTimer(System.plugin, 0, 20); // 20 ticks = 1 second
+                countdownTask.runTaskTimer(CloudSystem.plugin, 0, 20); // 20 ticks = 1 second
             } else {
                 player.sendMessage(Component.text("Invalid timer value").color(TextColor.fromHexString("#FF0000")));
             }
@@ -93,7 +93,7 @@ public class RestartCommand extends BaseCommand {
                     player1.sendMessage(Component.text("This restart can not be canceled.").color(TextColor.fromHexString("#FFAA00")));
                 }
                 CountdownTaskForced countdownTaskForced = new CountdownTaskForced(durationInSeconds);
-                countdownTaskForced.runTaskTimer(System.plugin, 0, 20); // 20 ticks = 1 second
+                countdownTaskForced.runTaskTimer(CloudSystem.plugin, 0, 20); // 20 ticks = 1 second
             } else {
                 player.sendMessage(Component.text("Invalid timer value").color(TextColor.fromHexString("#FF0000")));
             }

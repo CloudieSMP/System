@@ -1,7 +1,7 @@
-package moe.sebiann.system.listeners;
+package cloud.cloudie.cloudsystem.listeners;
 
-import moe.sebiann.system.System;
-import moe.sebiann.system.util.HexToRGB;
+import cloud.cloudie.cloudsystem.CloudSystem;
+import cloud.cloudie.cloudsystem.util.HexToRGB;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
-import static moe.sebiann.system.System.particleTasks;
+import static cloud.cloudie.cloudsystem.CloudSystem.particleTasks;
 
 public class FlyListener implements Listener {
     @EventHandler
@@ -58,7 +58,7 @@ public class FlyListener implements Listener {
                 return;
             }
 
-            BukkitTask particleTask = Bukkit.getScheduler().runTaskTimer(System.plugin, () -> {
+            BukkitTask particleTask = Bukkit.getScheduler().runTaskTimer(CloudSystem.plugin, () -> {
                 Particle.DustTransition dustTransition = new Particle.DustTransition(Color.fromRGB(rgb[0], rgb[1], rgb[2]), Color.WHITE, 2.0F);
                 player.getWorld().spawnParticle(Particle.DUST_COLOR_TRANSITION, player.getLocation(), 1, dustTransition);
             }, 0L, 5L);

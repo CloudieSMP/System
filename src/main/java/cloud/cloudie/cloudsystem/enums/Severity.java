@@ -1,4 +1,4 @@
-package moe.sebiann.system.enums;
+package cloud.cloudie.cloudsystem.enums;
 
 public enum Severity {
     SUCCESS("#83c916"),  // lime

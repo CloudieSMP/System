@@ -1,6 +1,6 @@
-name: System
+name: CloudSystem
 version: ${version}
-main: moe.sebiann.system.System
+main: cloud.cloudie.cloudsystem.CloudSystem
 api-version: '1.21.4'
 authors: [ Sebastian, Beauver ]
 website: sebiann.moe

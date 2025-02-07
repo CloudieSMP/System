@@ -1,5 +1,5 @@
-package moe.sebiann.system.commands;
-import moe.sebiann.system.System;
+package cloud.cloudie.cloudsystem.commands;
+import cloud.cloudie.cloudsystem.CloudSystem;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
@@ -17,8 +17,8 @@ public class SystemCommand extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("system.admin.reload")
     public void reload(CommandSender sender) {
-        System.plugin.reloadConfig();
-        sender.sendMessage(Component.text("System configuration reloaded successfully!")
+        CloudSystem.plugin.reloadConfig();
+        sender.sendMessage(Component.text("CloudSystem configuration reloaded successfully!")
                 .color(TextColor.fromHexString("#55FF55")));
     }
 }

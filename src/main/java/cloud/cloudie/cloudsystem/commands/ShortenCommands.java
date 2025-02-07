@@ -1,10 +1,10 @@
-package moe.sebiann.system.commands;
+package cloud.cloudie.cloudsystem.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
-import moe.sebiann.system.enums.Severity;
-import moe.sebiann.system.handler.message.MessageManager;
+import cloud.cloudie.cloudsystem.enums.Severity;
+import cloud.cloudie.cloudsystem.handler.message.MessageManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 

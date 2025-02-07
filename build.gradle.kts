@@ -4,8 +4,8 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
-group = "moe.sebiann"
-version = "0.3.1"
+group = "cloud.cloudie"
+version = "0.3.2"
 
 repositories {
     mavenCentral()
