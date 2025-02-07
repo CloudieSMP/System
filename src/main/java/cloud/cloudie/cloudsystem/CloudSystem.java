@@ -44,10 +44,11 @@ public class CloudSystem extends JavaPlugin {
         registerCommands();
         registerEvents();
         commandCompletions();
-        new UpdateChecker(this).checkForUpdates();
 
         getLogger().info("|                                                        |");
         getLogger().info("|-----------------------------[ ENABLED SUCCESSFULLY ]---|");
+
+        new UpdateChecker(this).checkForUpdates();
     }
 
     void registerCommands(){
