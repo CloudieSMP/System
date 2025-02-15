@@ -1,6 +1,7 @@
 package cloud.cloudie.cloudsystem;
 
 import cloud.cloudie.cloudsystem.commands.FlyCommand;
+import cloud.cloudie.cloudsystem.commands.GiveCommand;
 import cloud.cloudie.cloudsystem.commands.PissCommand;
 import cloud.cloudie.cloudsystem.commands.ReskinCommand;
 import cloud.cloudie.cloudsystem.commands.RulesGUICommand;
@@ -14,9 +15,11 @@ import cloud.cloudie.cloudsystem.util.AutoRestart;
 import cloud.cloudie.cloudsystem.util.UpdateChecker;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +43,10 @@ public class CloudSystem extends JavaPlugin {
         getLogger().info("|---[ CloudieSMP ]---------------------------------------|");
         getLogger().info("|                                                        |");
 
+        commandCompletions();
         registerClasses();
         registerCommands();
         registerEvents();
-        commandCompletions();
 
         getLogger().info("|                                                        |");
         getLogger().info("|-----------------------------[ ENABLED SUCCESSFULLY ]---|");
@@ -57,6 +60,7 @@ public class CloudSystem extends JavaPlugin {
         manager.registerCommand(new ReskinCommand());
         manager.registerCommand(new PissCommand());
         manager.registerCommand(new RulesGUICommand());
+        manager.registerCommand(new GiveCommand());
 
         //if renameCommands are enabled
         if(getConfig().getBoolean("ShortenCommands")){
@@ -85,6 +89,10 @@ public class CloudSystem extends JavaPlugin {
             List<String> skins = getConfig().getStringList("skins");
             return ImmutableList.copyOf(skins);
         });
+
+        manager.getCommandCompletions().registerCompletion("Items", context -> Arrays.stream(Material.values())
+                .map(Material::name)
+                .toList());
     }
 
     @Override
