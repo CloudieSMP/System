@@ -1,0 +1,91 @@
+import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
+import xyz.jpenilla.resourcefactory.bukkit.Permission
+import java.io.BufferedReader
+
+val commitHash = Runtime
+    .getRuntime()
+    .exec(arrayOf("git", "rev-parse", "--short", "HEAD"))
+    .let { process ->
+        process.waitFor()
+        val output = process.inputStream.use {
+            it.bufferedReader().use(BufferedReader::readText)
+        }
+        process.destroy()
+        output.trim()
+    }
+
+plugins {
+    kotlin("jvm") version "2.3.20-RC3"
+    kotlin("kapt") version "2.3.20-RC3"
+    id("com.gradleup.shadow") version "9.3.2"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("xyz.jpenilla.run-paper") version "3.0.2"
+    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.3.1" // Generates plugin.yml based on the Gradle config
+}
+
+group = "moe.oof"
+version = "Build-$commitHash"
+
+// Read: https://deepwiki.com/jpenilla/resource-factory/4.2-bukkit-plugins
+bukkitPluginYaml {
+    main = "System"
+    load = BukkitPluginYaml.PluginLoadOrder.STARTUP
+    authors.add("Sebiann")
+    apiVersion = "1.21.11"
+
+    permissions {
+        register("cloudie.silent.join") {
+            description = "Hides this player's join message"
+            default = Permission.Default.FALSE
+        }
+        register("cloudie.silent.quit") {
+            description = "Hides this player's quit message"
+            default = Permission.Default.FALSE
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        javaParameters = true
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        name = "papermc-repo"
+    }
+}
+
+dependencies {
+    implementation(kotlin("stdlib"))
+    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+
+    implementation("org.incendo:cloud-paper:2.0.0-beta.13")
+    implementation("org.incendo:cloud-annotations:2.0.0")
+    implementation("org.incendo:cloud-kotlin-extensions:2.0.0")
+    kapt("org.incendo:cloud-annotations:2.0.0")
+
+    implementation("org.spongepowered:configurate-yaml:4.2.0")
+    implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
+}
+
+tasks {
+    compileJava {
+        options.release = 21
+    }
+    javadoc {
+        options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+    }
+
+    shadowJar {
+        val shadowPkg = "moe.oof.system.shade"
+
+        relocate("org.incendo", "${shadowPkg}.org.incendo")
+        relocate("org.spongepowered", "${shadowPkg}.org.spongepowered")
+
+        mergeServiceFiles()
+    }
+}

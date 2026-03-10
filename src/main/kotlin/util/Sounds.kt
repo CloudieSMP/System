@@ -1,0 +1,12 @@
+package util
+
+import net.kyori.adventure.key.Key.key
+import net.kyori.adventure.sound.Sound.Source
+import net.kyori.adventure.sound.Sound.sound
+
+object Sounds {
+    val ADMIN_MESSAGE = sound(key("ui.button.click"), Source.MASTER, 0.5f, 2f)
+    val SERVER_ANNOUNCEMENT = sound(key("block.note_block.pling"), Source.MASTER, 1f, 1f)
+    val RENAME_ITEM = sound(key("block.smithing_table.use"), Source.PLAYER, 1f, 1f)
+    val PLING = sound(key("minecraft:block.note_block.pling"), Source.PLAYER, 0.5f, 1f)
+}

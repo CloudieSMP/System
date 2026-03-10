@@ -1,3 +1,14 @@
+run
+.gradle
+build/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
 # Compiled class file
 *.class
 
