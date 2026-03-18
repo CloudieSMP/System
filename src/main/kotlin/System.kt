@@ -49,6 +49,7 @@ class System : JavaPlugin() {
         server.pluginManager.registerEvents(PlayerJoin(config), this)
         server.pluginManager.registerEvents(PlayerQuit(), this)
         server.pluginManager.registerEvents(ChatEvent(), this)
+        server.pluginManager.registerEvents(PlayerInteractEntity(), this)
     }
 
     override fun reloadConfig() {

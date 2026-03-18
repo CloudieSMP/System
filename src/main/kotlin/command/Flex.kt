@@ -14,10 +14,10 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
 class Flex {
-    @Command("flex")
+    @Command("flex|showitem")
     @Permission("cloudie.command.flex")
     fun flex(css: CommandSourceStack) {
-        val player = css.sender as Player
+        val player = css.sender as? Player ?: return
         Flexing.flex(player, null)
     }
 }

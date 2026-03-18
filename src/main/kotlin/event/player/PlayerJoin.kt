@@ -35,6 +35,11 @@ class PlayerJoin : Listener {
     fun onPlayerJoin(e: PlayerJoinEvent) {
         sendTabList(e.player)
 
+        val brand = e.player.clientBrandName
+            ?.replaceFirstChar { it.uppercaseChar() }
+            ?: "Unknown"
+        logger.info("(BRAND) ${e.player.name} joined using $brand.")
+
         val resourcePackRequest = ResourcePackRequest.resourcePackRequest()
             .packs(resourcePacks)
             .prompt(mm.deserialize("<gradient:#DF6F69:#C45889:#823BC6>Please download the required resource packs for Cloudie</gradient>"))
