@@ -5,6 +5,7 @@ import Link
 import ResourcePack
 import chat.Formatting
 import command.LiveUtil
+import library.Translation
 import logger
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.resource.ResourcePackInfo
@@ -50,7 +51,7 @@ class PlayerJoin : Listener {
         if(e.player.hasPermission("cloudie.silent.join")) {
             e.joinMessage(null)
         } else {
-            e.joinMessage(Formatting.allTags.deserialize("<dark_gray>[<light_purple>+<dark_gray>] <cloudiecolor>${e.player.name}<reset> joined the game."))
+            e.joinMessage(Formatting.allTags.deserialize(Translation.PlayerMessages.JOIN.replace("%player%", e.player.name)))
         }
 
         if(LiveUtil.isLive(e.player)) {

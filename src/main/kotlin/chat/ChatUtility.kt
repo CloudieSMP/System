@@ -25,6 +25,26 @@ import org.bukkit.util.Transformation
 import org.joml.Vector3f
 
 object ChatUtility {
+    /** Sends a message to the specified audience. **/
+    fun messageAudience(recipient: Audience, message: String, restricted: Boolean, vararg placeholders: TagResolver) {
+        val resolvers = mutableListOf<TagResolver>()
+        for(p in placeholders) {
+            resolvers.add(p)
+        }
+
+        recipient.sendMessage(formatMessage(message, restricted, TagResolver.resolver(resolvers)))
+    }
+
+    /** Sends a message to the specified audience. **/
+    fun broadcastAll(message: String, vararg placeholders: TagResolver) {
+        val resolvers = mutableListOf<TagResolver>()
+        for(p in placeholders) {
+            resolvers.add(p)
+        }
+
+        Audience.audience(Bukkit.getOnlinePlayers()).sendMessage(formatMessage(message, false, TagResolver.resolver(resolvers)))
+    }
+
     /** Formats a message, which can produce different results depending on if restricted or not. **/
     fun formatMessage(message: String, restricted: Boolean, vararg placeholders: TagResolver): Component {
         val resolvers = mutableListOf<TagResolver>()

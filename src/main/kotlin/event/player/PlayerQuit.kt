@@ -2,6 +2,7 @@ package event.player
 
 import chat.Formatting
 import command.LiveUtil
+import library.Translation
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -13,7 +14,8 @@ class PlayerQuit: Listener {
         if(e.player.hasPermission("cloudie.silent.quit")) {
             e.quitMessage(null)
         } else {
-            e.quitMessage(Formatting.allTags.deserialize("<dark_gray>[<dark_purple>-<dark_gray>] <cloudiecolor>${e.player.name}<reset> left the game."))
+            e.quitMessage(Formatting.allTags.deserialize(Translation.PlayerMessages.QUIT.replace("%player%", e.player.name)))
+
         }
 
         if(LiveUtil.isLive(e.player)) {
