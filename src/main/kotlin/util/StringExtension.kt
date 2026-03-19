@@ -8,10 +8,6 @@ private val VOWELS = listOf('a', 'e', 'i', 'o', 'u')
  * [VOWELS] are a, e, i, o, u.
  */
 fun String.startsWithVowel(): Boolean {
-    try {
-        val firstChar = this.lowercase().first()
-        return VOWELS.contains(firstChar)
-    } catch (ex: NoSuchElementException) {
-        return false
-    }
+    val firstChar = this.firstOrNull()?.lowercaseChar() ?: return false
+    return VOWELS.contains(firstChar)
 }

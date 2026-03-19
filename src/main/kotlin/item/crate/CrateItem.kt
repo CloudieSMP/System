@@ -17,56 +17,16 @@ import org.bukkit.persistence.PersistentDataType.*
 @Suppress("UnstableApiUsage")
 enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
     PENGUIN(10,
-        ItemStack(Material.PAPER).apply {
-            val plushieMeta = this.itemMeta
-            plushieMeta.displayName(allTags.deserialize("<!i><red>Penguin"))
-            plushieMeta.lore(listOf(
-                allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A Plushie.")
-            ))
-            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
-            this.itemMeta = plushieMeta
-            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/penguin_plushie"))
-        }
+        createPlushie("Penguin", "plushies/penguin_plushie")
     ),
     MUSHROOM(10,
-        ItemStack(Material.PAPER).apply {
-            val plushieMeta = this.itemMeta
-            plushieMeta.displayName(allTags.deserialize("<!i><red>Mushroom"))
-            plushieMeta.lore(listOf(
-                allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A Plushie.")
-            ))
-            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
-            this.itemMeta = plushieMeta
-            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/mushroom_plushie"))
-        }
+        createPlushie("Mushroom", "plushies/mushroom_plushie")
     ),
     BEE(10,
-        ItemStack(Material.PAPER).apply {
-            val plushieMeta = this.itemMeta
-            plushieMeta.displayName(allTags.deserialize("<!i><red>Bee"))
-            plushieMeta.lore(listOf(
-                allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A Plushie.")
-            ))
-            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
-            this.itemMeta = plushieMeta
-            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/bee_plushie"))
-        }
+        createPlushie("Bee", "plushies/bee_plushie")
     ),
     STAR(10,
-        ItemStack(Material.PAPER).apply {
-            val plushieMeta = this.itemMeta
-            plushieMeta.displayName(allTags.deserialize("<!i><red>Star"))
-            plushieMeta.lore(listOf(
-                allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A Plushie.")
-            ))
-            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
-            this.itemMeta = plushieMeta
-            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/star_plushie"))
-        }
+        createPlushie("Star", "plushies/star_plushie")
     ),
     HEART(10,
         ItemStack(Material.PAPER).apply {
@@ -82,16 +42,22 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
         }
     ),
     SEBIANN(10,
-        ItemStack(Material.PAPER).apply {
-            val plushieMeta = this.itemMeta
-            plushieMeta.displayName(allTags.deserialize("<!i><red>Sebiann"))
-            plushieMeta.lore(listOf(
-                allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A Plushie.")
-            ))
-            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
-            this.itemMeta = plushieMeta
-            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/sebiann"))
+        createPlushie("Sebiann", "plushies/sebiann")
+    );
+
+    companion object {
+        private fun createPlushie(name: String, modelKey: String): ItemStack {
+            return ItemStack(Material.PAPER).apply {
+                val plushieMeta = this.itemMeta
+                plushieMeta.displayName(allTags.deserialize("<!i><red>$name"))
+                plushieMeta.lore(listOf(
+                    allTags.deserialize("<!i><white>${COMMON.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
+                    allTags.deserialize("<!i><yellow>A Plushie.")
+                ))
+                plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
+                this.itemMeta = plushieMeta
+                setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", modelKey))
+            }
         }
-    )
+    }
 }

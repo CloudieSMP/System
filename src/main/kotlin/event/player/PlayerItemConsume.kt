@@ -1,6 +1,7 @@
 package event.player
 
 import item.crate.CrateType
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerItemConsumeEvent
@@ -14,7 +15,12 @@ class PlayerItemConsume : Listener {
     fun playerItemConsume(event: PlayerItemConsumeEvent) {
         val crateType = event.item.persistentDataContainer.get(CRATE_TYPE, PersistentDataType.STRING)
         if (crateType != null) {
-            GamblingWindow.open(event.player, CrateType.valueOf(crateType))
+            val type = enumValues<CrateType>().firstOrNull { it.name == crateType }
+            if (type == null) {
+                Bukkit.getLogger().warning("Unknown crate type '$crateType' on consumed item from ${event.player.name}")
+                return
+            }
+            GamblingWindow.open(event.player, type)
         }
     }
 }
