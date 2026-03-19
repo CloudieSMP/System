@@ -2,7 +2,7 @@ package item.crate
 
 import chat.Formatting.allTags
 import io.papermc.paper.datacomponent.DataComponentTypes
-import item.ItemRarity.COMMON
+import item.ItemRarity.*
 import item.ItemType
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -83,7 +83,20 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/heart_plushie"))
         }
     ),
-    SEBIANN(10,
+    SEBIANN_CLASSIC(1,
+        ItemStack(Material.PAPER).apply {
+            val plushieMeta = this.itemMeta
+            plushieMeta.displayName(allTags.deserialize("<!i><red>Sebiann"))
+            plushieMeta.lore(listOf(
+                allTags.deserialize("<!i><white>${RARE.rarityGlyph}${ItemType.PLUSHIE.typeGlyph}"),
+                allTags.deserialize("<!i><yellow>A Plushie.")
+            ))
+            plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, RARE.name)
+            this.itemMeta = plushieMeta
+            setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/sebiann-classic"))
+        }
+    ),
+    SEBIANN(100,
         ItemStack(Material.PAPER).apply {
             val plushieMeta = this.itemMeta
             plushieMeta.displayName(allTags.deserialize("<!i><red>Sebiann"))
@@ -96,7 +109,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/sebiann"))
         }
     ),
-    COOKIE(10,
+    COOKIE(100,
         ItemStack(Material.PAPER).apply {
             val plushieMeta = this.itemMeta
             plushieMeta.displayName(allTags.deserialize("<!i><red>Cookie"))
@@ -109,7 +122,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/cookie"))
         }
     ),
-    BEAUVER(10,
+    BEAUVER(100,
         ItemStack(Material.PAPER).apply {
             val plushieMeta = this.itemMeta
             plushieMeta.displayName(allTags.deserialize("<!i><red>Beauver"))

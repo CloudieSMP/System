@@ -26,6 +26,7 @@ enum class CrateLootPool(val possibleItems: List<CrateItem>) {
     )),
     PLAYER(listOf(
         SEBIANN,
+        SEBIANN_CLASSIC,
         COOKIE,
         BEAUVER
     ))
