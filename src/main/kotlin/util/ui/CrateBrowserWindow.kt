@@ -73,8 +73,9 @@ object CrateBrowserWindow : Listener {
 
         loot.forEachIndexed { index, crateItem ->
             if (index == backSlot) return@forEachIndexed
+            val sanitizedWeight = crateItem.pctChanceToRoll.coerceAtLeast(0)
             val actualChance = if (totalWeight > 0)
-                crateItem.pctChanceToRoll.toDouble() / totalWeight * 100.0
+                sanitizedWeight.toDouble() / totalWeight * 100.0
             else 0.0
             val chanceText = "%.1f".format(actualChance)
 

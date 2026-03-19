@@ -19,4 +19,4 @@ permissions:
     description: Allows the player to use the /system command.
     children:
         cloudie.silent.join: true
-        cloudie.silent.leave: true
+        cloudie.silent.quit: true
