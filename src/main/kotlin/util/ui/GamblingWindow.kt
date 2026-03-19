@@ -39,8 +39,11 @@ private class GamblingWindowHolder(val crateType: CrateType) : InventoryHolder {
 
 object GamblingWindow : Listener {
     private val wheelSlots = listOf(11, 12, 13, 14, 15)
+    private val winningWheelSlot = 13
     private val fillerPane = ItemStack(Material.PURPLE_STAINED_GLASS_PANE)
     private val idleWheelItem = ItemStack(Material.WHITE_WOOL)
+    private val winningPaneSlots = listOf(4, 22)
+    private val winningFillerPane = ItemStack(Material.LIME_STAINED_GLASS_PANE)
 
     fun open(player: Player, crateType: CrateType) {
         val holder = GamblingWindowHolder(crateType)
@@ -134,6 +137,9 @@ object GamblingWindow : Listener {
                     .coerceAtLeast(minDelayTicks)
 
                 if (holder.spinStepsDone >= holder.spinTargetSteps) {
+                    for (slot in wheelSlots) {
+                        if (slot != winningWheelSlot) inventory.setItem(slot, idleWheelItem)
+                    }
                     stopSpin(holder)
                     player.playSound(GAMBLING_WHEEL_STOP)
                     awardPendingReward(holder, player, "stopped")
@@ -228,7 +234,7 @@ object GamblingWindow : Listener {
 
     private fun renderInitialLayout(inventory: Inventory) {
         for (slot in 0 until inventory.size) {
-            inventory.setItem(slot, if (slot in wheelSlots) idleWheelItem else fillerPane)
+            inventory.setItem(slot, if (slot in wheelSlots) idleWheelItem else if (slot in winningPaneSlots) winningFillerPane else fillerPane)
         }
     }
 }
