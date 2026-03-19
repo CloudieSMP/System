@@ -1,0 +1,86 @@
+name: System
+description: Cloudie SMP S10 System
+api-version: "1.21.11"
+authors: [Sebiann]
+website: https://sebiann.moe
+
+version: ${version}
+main: System
+load: STARTUP
+
+permissions:
+  cloudie.silent:
+    description: Allows the player to join and quit the server silently.
+    default: false
+    children:
+      cloudie.silent.join: true
+      cloudie.silent.quit: true
+  cloudie.silent.join:
+    description: Allows the player to quit the server silently.
+    default: false
+  cloudie.silent.quit:
+    description: Allows the player to quit the server silently.
+    default: false
+
+  cloudie.group.admin:
+    description: Allows the player to use all admin commands.
+    default: op
+    children:
+      cloudie.command.reload: true
+      cloudie.command.admin_chat: true
+      cloudie.command.dev_chat: true
+      cloudie.command.vanish: true
+      cloudie.command.debug: true
+      cloudie.command.announce: true
+      cloudie.command.timer: true
+      cloudie.command.height.others: true
+
+  cloudie.command.reload:
+    description: Allows the player to reload the plugin.
+  cloudie.command.admin_chat:
+    description: Allows the player to use the admin chat command.
+  cloudie.command.dev_chat:
+    description: Allows the player to use the developer chat command.
+  cloudie.command.vanish:
+    description: Allows the player to use the vanish command.
+  cloudie.command.debug:
+    description: Allows the player to use debug commands.
+  cloudie.command.announce:
+    description: Allows the player to use the announce command.
+  cloudie.command.timer:
+    description: Allows the player to use the timer command.
+  cloudie.command.height.others:
+    description: Allows the player to check height of other players.
+
+  cloudie.group.default:
+    description: Allows the player to use all default commands.
+    default: true
+    children:
+      cloudie.command.hat: true
+      cloudie.command.help: true
+      cloudie.command.seed: true
+      cloudie.command.height: true
+      cloudie.command.flex: true
+      cloudie.command.book: true
+      cloudie.command.renameitem: true
+      cloudie.command.resetitemname: true
+      cloudie.command.crates: true
+
+  cloudie.command.hat:
+    description: Allows the player to use the hat command.
+  cloudie.command.help:
+    description: Allows the player to use the help command.
+  cloudie.command.seed:
+    description: Allows the player to use the seed command.
+  cloudie.command.height:
+    description: Allows the player to use the height command.
+  cloudie.command.flex:
+    description: Allows the player to use the flex command.
+  cloudie.command.book:
+    description: Allows the player to use book commands.
+  cloudie.command.renameitem:
+    description: Allows the player to rename items.
+  cloudie.command.resetitemname:
+    description: Allows the player to reset item names.
+  cloudie.command.crates:
+    description: Allows the player to open the crates browser.

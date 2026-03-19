@@ -1,6 +1,7 @@
 import chat.Formatting.allTags
 import chat.VisualChat
 import event.ServerListEvent
+import event.block.CauldronListener
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
@@ -55,6 +56,7 @@ class System : JavaPlugin() {
         server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(PlayerInteractEntity(), this)
         server.pluginManager.registerEvents(PlayerItemConsume(), this)
+        server.pluginManager.registerEvents(CauldronListener(), this)
         server.pluginManager.registerEvents(CrateBrowserWindow, this)
         server.pluginManager.registerEvents(GamblingWindow, this)
     }

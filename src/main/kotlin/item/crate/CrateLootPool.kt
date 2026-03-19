@@ -8,7 +8,9 @@ enum class CrateLootPool(val possibleItems: List<CrateItem>) {
         MUSHROOM,
         BEE,
         STAR,
-        HEART
+        HEART,
+        RAMEN_BOWL,
+        COFFEE_CUP
     )),
     WEARABLES(listOf(
         CAT_EARS,
@@ -19,10 +21,6 @@ enum class CrateLootPool(val possibleItems: List<CrateItem>) {
         HEART_CROWN,
         ORCHID_CROWN,
         HEART_GLASSES
-    )),
-    UTENSILS(listOf(
-        COFFEE_CUP,
-        RAMEN_BOWL
     )),
     PLAYER(listOf(
         SEBIANN,

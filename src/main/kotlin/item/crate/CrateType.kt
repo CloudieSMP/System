@@ -22,7 +22,7 @@ enum class CrateType(val displayName : Component, val loreLines: List<Component>
         allTags.deserialize("<reset><!i><yellow>IDK YET.")
     ),
         COMMON,
-        "crate",
+        "crates/blue",
         CrateLootPool.PLUSHIE
     ),
     WEARABLES(
@@ -32,18 +32,8 @@ enum class CrateType(val displayName : Component, val loreLines: List<Component>
             allTags.deserialize("<reset><!i><yellow>IDK YET.")
         ),
         COMMON,
-        "crate",
+        "crates/default",
         CrateLootPool.WEARABLES
-    ),
-    UTENSILS(
-        allTags.deserialize("<gradient:#DF6F69:#C45889:#823BC6><bold>Utensils Crate</bold></gradient>"),
-        listOf(
-            allTags.deserialize("<reset><!i><white>${COMMON.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-            allTags.deserialize("<reset><!i><yellow>IDK YET.")
-        ),
-        COMMON,
-        "crate",
-        CrateLootPool.UTENSILS
     ),
     PLAYER(
         allTags.deserialize("<gradient:#DF6F69:#C45889:#823BC6><bold>Player Crate</bold></gradient>"),
@@ -52,7 +42,7 @@ enum class CrateType(val displayName : Component, val loreLines: List<Component>
             allTags.deserialize("<reset><!i><yellow>IDK YET.")
         ),
         UNCOMMON,
-        "crate",
+        "crates/default",
         CrateLootPool.PLAYER
     )
 }

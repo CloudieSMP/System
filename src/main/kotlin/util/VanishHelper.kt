@@ -16,12 +16,16 @@ object VanishHelper {
         if(player in vanishPlayers) {
             vanishPlayers.remove(player)
             player.sendMessage(Formatting.allTags.deserialize("<dark_gray><i>You are now unvanished"))
-            ChatUtility.broadcastAll( Translation.PlayerMessages.JOIN.replace("%player%", player.name))
+            if(!player.hasPermission("cloudie.silent.join")) {
+                ChatUtility.broadcastAll( Translation.PlayerMessages.JOIN.replace("%player%", player.name))
+            }
         } else {
             vanishPlayers.add(player)
             vanishTask(player)
             player.sendMessage(Formatting.allTags.deserialize("<dark_gray><i>You are now vanished"))
-            ChatUtility.broadcastAll( Translation.PlayerMessages.QUIT.replace("%player%", player.name))
+            if(!player.hasPermission("cloudie.silent.quit")) {
+                ChatUtility.broadcastAll(Translation.PlayerMessages.QUIT.replace("%player%", player.name))
+            }
         }
     }
 

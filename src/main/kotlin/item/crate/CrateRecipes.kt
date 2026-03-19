@@ -10,7 +10,6 @@ object CrateRecipes {
     fun registerAll() {
         registerPlushieCrate()
         registerWearablesCrate()
-        registerUtensilsCrate()
         registerPlayerCrate()
     }
 
@@ -38,20 +37,6 @@ object CrateRecipes {
             )
             setIngredient('D', Material.OAK_WOOD)
             setIngredient('E', Material.LIGHT_BLUE_WOOL)
-        }
-        Bukkit.addRecipe(recipe)
-    }
-
-    private fun registerUtensilsCrate() {
-        val crate = Crate.create(CrateType.UTENSILS)
-        val recipe = ShapedRecipe(NamespacedKey(plugin, "utensils_crate"), crate).apply {
-            shape(
-                "DDD",
-                "DED",
-                "DDD"
-            )
-            setIngredient('D', Material.OAK_WOOD)
-            setIngredient('E', Material.ORANGE_WOOL)
         }
         Bukkit.addRecipe(recipe)
     }

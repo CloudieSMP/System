@@ -2,7 +2,7 @@ package item
 
 import org.bukkit.Color
 
-enum class ItemRarity(val rarityName: String, val rarityGlyph: String, val colour: Color, val colourHex: String) {
+enum class ItemRarity(val rarityName: String, val rarityGlyph: String, val color: Color, val colorHex: String) {
     SPECIAL("Special", "\uE100", Color.fromRGB(236, 28, 36), "#ec1c24"),
     COMMON("Common", "\uE101", Color.fromRGB(255, 255, 255), "#ffffff"),
     UNCOMMON("Uncommon", "\uE102", Color.fromRGB(14, 209, 69), "#0ed145"),

@@ -104,6 +104,7 @@ object VisualChat {
                 text(parsedMessage)
                 addScoreboardTag("cloudie.entity.visual_chat:${sender.uniqueId}")
             }
+            sender.addPassenger(messageEntity)
             sender.world.sendGameEvent(sender, GameEvent.EXPLODE, sender.location.toVector())
             object : BukkitRunnable() {
                 var i = 0
@@ -115,7 +116,6 @@ object VisualChat {
                     if(i >= VISUAL_CHAT_MESSAGE_ENTITY_SHRINK_TIME) {
                         messageEntity.transformation = Transformation(Vector3f(0.0f, 1f, 0.0f), messageEntity.transformation.leftRotation, messageEntity.transformation.scale.sub(0.025f, 0.025f, 0.025f), messageEntity.transformation.rightRotation)
                     }
-                    messageEntity.teleport(sender.eyeLocation)
                     i++
                 }
             }.runTaskTimer(plugin, 0L, 1L)
