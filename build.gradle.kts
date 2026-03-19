@@ -1,6 +1,6 @@
-import xyz.jpenilla.resourcefactory.bukkit.BukkitPluginYaml
-import xyz.jpenilla.resourcefactory.bukkit.Permission
 import java.io.BufferedReader
+
+val patch = "INDEV"
 
 val commitHash = Runtime
     .getRuntime()
@@ -20,30 +20,10 @@ plugins {
     id("com.gradleup.shadow") version "9.3.2"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("xyz.jpenilla.resource-factory-bukkit-convention") version "1.3.1" // Generates plugin.yml based on the Gradle config
 }
 
 group = "moe.oof"
-version = "Build-$commitHash"
-
-// Read: https://deepwiki.com/jpenilla/resource-factory/4.2-bukkit-plugins
-bukkitPluginYaml {
-    main = "System"
-    load = BukkitPluginYaml.PluginLoadOrder.STARTUP
-    authors.add("Sebiann")
-    apiVersion = "1.21.11"
-
-    permissions {
-        register("cloudie.silent.join") {
-            description = "Hides this player's join message"
-            default = Permission.Default.FALSE
-        }
-        register("cloudie.silent.quit") {
-            description = "Hides this player's quit message"
-            default = Permission.Default.FALSE
-        }
-    }
-}
+version = "$patch-Build-$commitHash"
 
 kotlin {
     jvmToolchain(21)
@@ -87,5 +67,14 @@ tasks {
         relocate("org.spongepowered", "${shadowPkg}.org.spongepowered")
 
         mergeServiceFiles()
+    }
+
+    processResources {
+        val props = mapOf("version" to version)
+        inputs.properties(props)
+        filteringCharset = "UTF-8"
+        filesMatching("paper-plugin.yml") {
+            expand(props)
+        }
     }
 }
