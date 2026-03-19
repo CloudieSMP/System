@@ -4,6 +4,7 @@ import event.ServerListEvent
 import event.block.CauldronListener
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
+import command.LiveUtil
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -14,12 +15,14 @@ import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import util.ui.GamblingWindow
 import util.ui.CrateBrowserWindow
+import util.VanishHelper
 import item.crate.CrateRecipes
 import java.io.File
 
 @Suppress( "unstableApiUsage")
 class System : JavaPlugin() {
     private lateinit var commandManager: PaperCommandManager<CommandSourceStack>
+    private val playerJoinListener = PlayerJoin()
     lateinit var config: Config
         private set
 
@@ -30,13 +33,12 @@ class System : JavaPlugin() {
         registerCommands()
         CrateRecipes.registerAll()
         VisualChat.clearChatEntities()
-        config.links.forEach {
-            Bukkit.getServerLinks().addLink(allTags.deserialize(it.component), it.uri)
-        }
     }
 
     override fun onDisable() {
         this.logger.info("Stopping the Cloudie System plugin!")
+        LiveUtil.shutdown()
+        VanishHelper.resetAllVisibility()
         VisualChat.clearChatEntities()
     }
 
@@ -51,7 +53,7 @@ class System : JavaPlugin() {
 
     private fun setupEvents() {
         server.pluginManager.registerEvents(ServerListEvent(), this)
-        server.pluginManager.registerEvents(PlayerJoin(config), this)
+        server.pluginManager.registerEvents(playerJoinListener, this)
         server.pluginManager.registerEvents(PlayerQuit(), this)
         server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(PlayerInteractEntity(), this)
@@ -59,6 +61,16 @@ class System : JavaPlugin() {
         server.pluginManager.registerEvents(CauldronListener(), this)
         server.pluginManager.registerEvents(CrateBrowserWindow, this)
         server.pluginManager.registerEvents(GamblingWindow, this)
+    }
+
+    private fun applyConfig(config: Config) {
+        playerJoinListener.updateConfig(config)
+
+        val serverLinks = Bukkit.getServerLinks()
+        serverLinks.links.toList().forEach(serverLinks::removeLink)
+        config.links.sortedBy { it.order }.forEach {
+            serverLinks.addLink(allTags.deserialize(it.component), it.uri)
+        }
     }
 
     override fun reloadConfig() {
@@ -84,10 +96,11 @@ class System : JavaPlugin() {
 
         val node = loader.load()
         config = node.get(Config::class)!!
+        applyConfig(config)
         logger.info("Loaded configuration.")
     }
 }
 
-val plugin = Bukkit.getPluginManager().getPlugin("system")!!
-val logger = plugin.logger
+val plugin: System get() = JavaPlugin.getPlugin(System::class.java)
+val logger get() = plugin.logger
 //val config: Config get() = (plugin as System).config

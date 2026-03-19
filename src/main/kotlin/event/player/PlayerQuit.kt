@@ -17,9 +17,6 @@ class PlayerQuit: Listener {
             e.quitMessage(Formatting.allTags.deserialize(Translation.PlayerMessages.QUIT.replace("%player%", e.player.name)))
 
         }
-
-        if(LiveUtil.isLive(e.player)) {
-            LiveUtil.onPlayerQuit(e.player)
-        }
+        LiveUtil.onPlayerQuit(e.player)
     }
 }

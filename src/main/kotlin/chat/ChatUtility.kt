@@ -84,7 +84,7 @@ object GlobalRenderer : ChatRenderer {
         val plainMessage = PlainTextComponentSerializer.plainText().serialize(message)
         return playerHead
             .append(Component.text(" "))
-            .append(allTags.deserialize("${if(LiveUtil.livePlayers.contains(source.uniqueId)) "<prefix:live> " else ""}<cloudiecolor>${source.name}<reset>: ")
+            .append(allTags.deserialize("${if (LiveUtil.isLive(source)) "<prefix:live> " else ""}<cloudiecolor>${source.name}<reset>: ")
                 .append(if(source.hasPermission("cloudie.group.admin")) allTags.deserialize(plainMessage) else restrictedTags.deserialize(plainMessage)))
     }
 }

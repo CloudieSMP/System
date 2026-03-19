@@ -167,21 +167,21 @@ object GamblingWindow : Listener {
 
         for ((index, slot) in wheelSlots.withIndex()) {
             val crateItem = pool[(offset + index) % pool.size]
-            inventory.setItem(slot, crateItem.itemStack.clone())
+            inventory.setItem(slot, crateItem.createItemStack())
         }
     }
 
     private fun pickWeightedItem(pool: List<CrateItem>): CrateItem {
-        val sanitizedWeights = pool.map { it.pctChanceToRoll.coerceAtLeast(0) }
-        val totalWeight = sanitizedWeights.sum()
+        val sanitizedRollWeights = pool.map { it.rollWeight.coerceAtLeast(0) }
+        val totalRollWeight = sanitizedRollWeights.sum()
 
-        if (totalWeight <= 0) {
+        if (totalRollWeight <= 0) {
             return pool.random()
         }
 
-        var roll = Random.nextInt(totalWeight)
+        var roll = Random.nextInt(totalRollWeight)
         for (index in pool.indices) {
-            roll -= sanitizedWeights[index]
+            roll -= sanitizedRollWeights[index]
             if (roll < 0) return pool[index]
         }
 
@@ -207,7 +207,8 @@ object GamblingWindow : Listener {
             return
         }
 
-        val leftovers = player.inventory.addItem(winner.itemStack.clone())
+        val rewardStack = winner.createItemStack()
+        val leftovers = player.inventory.addItem(rewardStack)
         for (leftover in leftovers.values) {
             player.world.dropItemNaturally(player.location, leftover)
         }
@@ -215,7 +216,7 @@ object GamblingWindow : Listener {
         if (reason == "closed early") {
             player.sendMessage(
                 Formatting.allTags.deserialize("<yellow>You closed the wheel early — you still won a ")
-                    .append(winner.itemStack.displayName())
+                    .append(rewardStack.displayName())
                     .append(Formatting.allTags.deserialize("<yellow> from the "))
                     .append(holder.crateType.displayName)
                     .append(Formatting.allTags.deserialize("<yellow>."))
@@ -223,7 +224,7 @@ object GamblingWindow : Listener {
         } else {
             player.sendMessage(
                 Formatting.allTags.deserialize("<green>You won a ")
-                    .append(winner.itemStack.displayName())
+                    .append(rewardStack.displayName())
                     .append(Formatting.allTags.deserialize("<green> from the "))
                     .append(holder.crateType.displayName)
                     .append(Formatting.allTags.deserialize("<green>!"))

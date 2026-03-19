@@ -35,6 +35,12 @@ permissions:
       cloudie.command.timer: true
       cloudie.command.height.others: true
 
+  cloudie.group.dev:
+    description: Allows the player to use developer chat and receive developer messages.
+    default: false
+    children:
+      cloudie.command.dev_chat: true
+
   cloudie.command.reload:
     description: Allows the player to reload the plugin.
   cloudie.command.admin_chat:
@@ -65,6 +71,9 @@ permissions:
       cloudie.command.renameitem: true
       cloudie.command.resetitemname: true
       cloudie.command.crates: true
+      cloudie.command.spawn: true
+      cloudie.command.streamermode: true
+      cloudie.command.echo: true
 
   cloudie.command.hat:
     description: Allows the player to use the hat command.
@@ -84,3 +93,9 @@ permissions:
     description: Allows the player to reset item names.
   cloudie.command.crates:
     description: Allows the player to open the crates browser.
+  cloudie.command.spawn:
+    description: Allows the player to use the spawn command.
+  cloudie.command.streamermode:
+    description: Allows the player to toggle streamer mode.
+  cloudie.command.echo:
+    description: Allows the player to use the echo command.

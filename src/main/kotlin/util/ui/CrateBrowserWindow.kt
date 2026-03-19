@@ -22,7 +22,7 @@ private class CrateSelectorHolder : InventoryHolder {
     }
 }
 
-private class CrateLootHolder(val crateType: CrateType) : InventoryHolder {
+private class CrateLootHolder : InventoryHolder {
     var backingInventory: Inventory? = null
 
     override fun getInventory(): Inventory {
@@ -58,7 +58,7 @@ object CrateBrowserWindow : Listener {
     }
 
     private fun openLootPreview(player: Player, crateType: CrateType) {
-        val holder = CrateLootHolder(crateType)
+        val holder = CrateLootHolder()
         val loot = crateType.lootPool.possibleItems
         val size = ((loot.size + 1 + 8) / 9).coerceAtLeast(1) * 9
         val inventory = Bukkit.createInventory(holder, size, crateType.displayName)
@@ -69,20 +69,20 @@ object CrateBrowserWindow : Listener {
             inventory.setItem(slot, fillerPane)
         }
 
-        val totalWeight = loot.sumOf { it.pctChanceToRoll.coerceAtLeast(0) }
+        val totalRollWeight = loot.sumOf { it.rollWeight.coerceAtLeast(0) }
 
         loot.forEachIndexed { index, crateItem ->
             if (index == backSlot) return@forEachIndexed
-            val sanitizedWeight = crateItem.pctChanceToRoll.coerceAtLeast(0)
-            val actualChance = if (totalWeight > 0)
-                sanitizedWeight.toDouble() / totalWeight * 100.0
+            val itemRollWeight = crateItem.rollWeight.coerceAtLeast(0)
+            val actualChance = if (totalRollWeight > 0)
+                itemRollWeight.toDouble() / totalRollWeight * 100.0
             else 0.0
-            val chanceText = "%.1f".format(actualChance)
+            val chancePercentText = "%.1f".format(actualChance)
 
-            val preview = crateItem.itemStack.clone()
+            val preview = crateItem.createItemStack()
             preview.editMeta { meta ->
                 val updatedLore = (meta.lore() ?: emptyList()) +
-                    allTags.deserialize("<!i><gray>Chance: <white>$chanceText%")
+                    allTags.deserialize("<!i><gray>Chance: <white>$chancePercentText%")
                 meta.lore(updatedLore)
             }
             inventory.setItem(index, preview)

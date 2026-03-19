@@ -32,53 +32,94 @@ class Live {
 }
 
 object LiveUtil {
-    val livePlayers = mutableSetOf<UUID>()
-    val liveTasks = mutableMapOf<UUID, BukkitRunnable>()
-    val pendingTimeouts = mutableMapOf<UUID, BukkitRunnable>()
+    private val livePlayerIds = mutableSetOf<UUID>()
+    private val liveTasks = mutableMapOf<UUID, BukkitRunnable>()
+    private val pendingTimeouts = mutableMapOf<UUID, BukkitRunnable>()
 
-    fun isLive(player: Player): Boolean {
-        return livePlayers.contains(player.uniqueId)
-    }
+    fun isLive(player: Player): Boolean = isLive(player.uniqueId)
+
+    fun isLive(playerId: UUID): Boolean = playerId in livePlayerIds
 
     fun startLive(player: Player) {
-        livePlayers.add(player.uniqueId)
+        val playerId = player.uniqueId
+        pendingTimeouts.remove(playerId)?.cancel()
+        livePlayerIds.add(playerId)
+        startOrReplaceLiveTask(player)
         player.sendMessage("Live mode enabled.")
+    }
+
+    fun stopLive(player: Player) {
+        val playerId = player.uniqueId
+        livePlayerIds.remove(playerId)
+        pendingTimeouts.remove(playerId)?.cancel()
+        liveTasks.remove(playerId)?.cancel()
+        resetPlayerNames(player)
+        player.sendMessage("Live mode disabled.")
+    }
+
+    fun onPlayerQuit(player: Player) {
+        val playerId = player.uniqueId
+        if (!isLive(playerId)) return
+
+        liveTasks.remove(playerId)?.cancel()
+        val timeoutTask = object : BukkitRunnable() {
+            override fun run() {
+                livePlayerIds.remove(playerId)
+                pendingTimeouts.remove(playerId)
+            }
+        }
+        pendingTimeouts[playerId]?.cancel()
+        timeoutTask.runTaskLater(plugin, 20L * 60 * 10) // 10 minutes
+        pendingTimeouts[playerId] = timeoutTask
+    }
+
+    fun onPlayerJoin(player: Player) {
+        val playerId = player.uniqueId
+        pendingTimeouts.remove(playerId)?.cancel()
+        if (!isLive(playerId)) return
+
+        startOrReplaceLiveTask(player)
+        player.sendMessage("Live mode enabled.")
+    }
+
+    fun shutdown() {
+        liveTasks.values.forEach(BukkitRunnable::cancel)
+        liveTasks.clear()
+        pendingTimeouts.values.forEach(BukkitRunnable::cancel)
+        pendingTimeouts.clear()
+
+        for (playerId in livePlayerIds) {
+            Bukkit.getPlayer(playerId)?.let(::resetPlayerNames)
+        }
+        livePlayerIds.clear()
+    }
+
+    private fun startOrReplaceLiveTask(player: Player) {
+        val playerId = player.uniqueId
+        liveTasks.remove(playerId)?.cancel()
+
         val timerRunnable = object : BukkitRunnable() {
             override fun run() {
-                player.displayName(null)
-                player.playerListName(null)
+                if (!player.isOnline || !isLive(playerId)) {
+                    cancel()
+                    liveTasks.remove(playerId)
+                    return
+                }
+
+                resetPlayerNames(player)
                 val newName = Formatting.allTags.deserialize("\uE010 ")
                     .append(player.displayName().color(TextColor.color(255, 156, 237)))
                 player.displayName(newName)
                 player.playerListName(newName)
             }
         }
+
         timerRunnable.runTaskTimer(plugin, 0L, 20L)
-        liveTasks[player.uniqueId] = timerRunnable
+        liveTasks[playerId] = timerRunnable
     }
 
-    fun stopLive(player: Player) {
-        livePlayers.remove(player.uniqueId)
-        liveTasks.remove(player.uniqueId)?.cancel()
+    private fun resetPlayerNames(player: Player) {
         player.displayName(null)
         player.playerListName(null)
-        player.sendMessage("Live mode disabled.")
-    }
-
-    fun onPlayerQuit(player: Player) {
-        if (isLive(player)) {
-            val timeoutTask = object : BukkitRunnable() {
-                override fun run() {
-                    livePlayers.remove(player.uniqueId)
-                    liveTasks.remove(player.uniqueId)?.cancel()
-                }
-            }
-            timeoutTask.runTaskLater(plugin, 20L * 60 * 10) // 10 minutes
-            pendingTimeouts[player.uniqueId] = timeoutTask
-        }
-    }
-
-    fun onPlayerJoin(player: Player) {
-        pendingTimeouts.remove(player.uniqueId)?.cancel()
     }
 }

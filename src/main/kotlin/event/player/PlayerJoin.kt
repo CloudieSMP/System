@@ -1,7 +1,6 @@
 package event.player
 
 import Config
-import Link
 import ResourcePack
 import chat.Formatting
 import command.LiveUtil
@@ -14,6 +13,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import util.VanishHelper
 import util.sha1
 import java.net.URI
 import java.net.http.HttpClient
@@ -24,12 +24,10 @@ import org.bukkit.Bukkit
 @Suppress("UnstableApiUsage")
 class PlayerJoin : Listener {
     private val mm = MiniMessage.miniMessage()
-    val resourcePacks = mutableListOf<ResourcePackInfo>()
-    val links: List<Link>
+    private var resourcePacks: List<ResourcePackInfo> = emptyList()
 
-    constructor(config: Config) {
-        loadResourcePacks(config.resourcePacks)
-        links = config.links.sortedBy { it.order }
+    fun updateConfig(config: Config) {
+        resourcePacks = buildResourcePacks(config.resourcePacks)
     }
 
     @EventHandler
@@ -54,10 +52,8 @@ class PlayerJoin : Listener {
             e.joinMessage(Formatting.allTags.deserialize(Translation.PlayerMessages.JOIN.replace("%player%", e.player.name)))
         }
 
-        if(LiveUtil.isLive(e.player)) {
-            e.player.sendMessage("Live mode enabled.")
-            LiveUtil.onPlayerJoin(e.player)
-        }
+        LiveUtil.onPlayerJoin(e.player)
+        VanishHelper.syncVisibilityForJoin(e.player)
 
         e.player.sendLinks(Bukkit.getServerLinks())
     }
@@ -67,26 +63,19 @@ class PlayerJoin : Listener {
         audience.sendPlayerListFooter(mm.deserialize("<newline><gradient:#DF6F69:#C45889:#823BC6>  Cloudie SMP<white>: Season 10  <newline>"))
     }
 
-    private fun loadResourcePacks(configPacks: List<ResourcePack>) {
-        configPacks.sortedBy { it.priority }.forEach {
-            if (it.hash.isEmpty()) {
+    private fun buildResourcePacks(configPacks: List<ResourcePack>): List<ResourcePackInfo> {
+        return configPacks.sortedBy { it.priority }.map {
+            val hash = it.hash.ifEmpty {
                 logger.info("Hash missing for ${it.uri}, downloading...")
-                val hash = getHashForUri(it.uri)
-                logger.info("Calculated hash $hash for pack ${it.uri}")
-                resourcePacks.add(
-                    ResourcePackInfo.resourcePackInfo()
-                        .uri(it.uri)
-                        .hash(hash)
-                        .build()
-                )
-            } else {
-                resourcePacks.add(
-                    ResourcePackInfo.resourcePackInfo()
-                        .uri(it.uri)
-                        .hash(it.hash)
-                        .build()
-                )
+                getHashForUri(it.uri).also { calculatedHash ->
+                    logger.info("Calculated hash $calculatedHash for pack ${it.uri}")
+                }
             }
+
+            ResourcePackInfo.resourcePackInfo()
+                .uri(it.uri)
+                .hash(hash)
+                .build()
         }
     }
 

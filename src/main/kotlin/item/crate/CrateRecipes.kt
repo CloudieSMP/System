@@ -8,49 +8,19 @@ import plugin
 
 object CrateRecipes {
     fun registerAll() {
-        registerPlushieCrate()
-        registerWearablesCrate()
-        registerPlayerCrate()
+        CrateType.entries.forEach(::registerCrateRecipe)
     }
 
-    private fun registerPlushieCrate() {
-        val crate = Crate.create(CrateType.PLUSHIE)
-        val recipe = ShapedRecipe(NamespacedKey(plugin, "plushie_crate"), crate).apply {
+    private fun registerCrateRecipe(crateType: CrateType) {
+        val crate = Crate.create(crateType)
+        val recipe = ShapedRecipe(NamespacedKey(plugin, crateType.recipeKey), crate).apply {
             shape(
                 "DDD",
                 "DED",
                 "DDD"
             )
             setIngredient('D', Material.OAK_WOOD)
-            setIngredient('E', Material.PINK_WOOL)
-        }
-        Bukkit.addRecipe(recipe)
-    }
-
-    private fun registerWearablesCrate() {
-        val crate = Crate.create(CrateType.WEARABLES)
-        val recipe = ShapedRecipe(NamespacedKey(plugin, "wearables_crate"), crate).apply {
-            shape(
-                "DDD",
-                "DED",
-                "DDD"
-            )
-            setIngredient('D', Material.OAK_WOOD)
-            setIngredient('E', Material.LIGHT_BLUE_WOOL)
-        }
-        Bukkit.addRecipe(recipe)
-    }
-
-    private fun registerPlayerCrate() {
-        val crate = Crate.create(CrateType.PLAYER)
-        val recipe = ShapedRecipe(NamespacedKey(plugin, "player_crate"), crate).apply {
-            shape(
-                "DDD",
-                "DED",
-                "DDD"
-            )
-            setIngredient('D', Material.OAK_WOOD)
-            setIngredient('E', Material.PURPLE_WOOL)
+            setIngredient('E', crateType.recipeAccentMaterial)
         }
         Bukkit.addRecipe(recipe)
     }

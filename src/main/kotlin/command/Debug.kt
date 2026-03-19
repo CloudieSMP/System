@@ -33,7 +33,7 @@ class Debug {
             return
         }
 
-        player.inventory.addItem(item.itemStack)
+        player.inventory.addItem(item.createItemStack())
         player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a crate item!"))
     }
 }

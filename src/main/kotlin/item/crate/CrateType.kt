@@ -5,44 +5,75 @@ import item.ItemRarity
 import item.ItemRarity.*
 import item.ItemType
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.Material
 
 /**
  * Crates
- * @property displayName The display name of the crate type.
- * @param loreLines The lore that should be attached to the bag
+ * @param crateName The display name of the crate
+ * @param crateDescription The description of the crate
  * @param crateRarity The rarity of the crate, which determines the color of the crate's name and lore
- * @param crateMaterial The material that the crate should be represented by in item form
- * @param lootPool The loot pool to pull from when generating bag contents
+ * @param crateMaterial The item model path used for this crate
+ * @param lootPool The loot pool to pull from when generating crate rewards
+ * @param recipeAccentMaterial The center ingredient used for this crate's crafting recipe
  */
-enum class CrateType(val displayName : Component, val loreLines: List<Component>, val crateRarity: ItemRarity, val crateMaterial: String, val lootPool: CrateLootPool) {
+enum class CrateType(
+    private val crateName: String,
+    private val crateDescription: String,
+    val crateRarity: ItemRarity,
+    val crateMaterial: String,
+    val lootPool: CrateLootPool,
+    val recipeAccentMaterial: Material,
+) {
     PLUSHIE(
-    allTags.deserialize("<gradient:#DF6F69:#C45889:#823BC6><bold>Plushie Crate</bold></gradient>"),
-    listOf(
-        allTags.deserialize("<reset><!i><white>${COMMON.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-        allTags.deserialize("<reset><!i><yellow>IDK YET.")
-    ),
+        "Plushie Crate",
+        "A crate containing plushies",
         COMMON,
         "crates/blue",
-        CrateLootPool.PLUSHIE
+        CrateLootPool.PLUSHIE,
+        Material.PINK_WOOL,
     ),
     WEARABLES(
-        allTags.deserialize("<gradient:#DF6F69:#C45889:#823BC6><bold>Wearables Crate</bold></gradient>"),
-        listOf(
-            allTags.deserialize("<reset><!i><white>${COMMON.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-            allTags.deserialize("<reset><!i><yellow>IDK YET.")
-        ),
+        "Wearables Crate",
+        "A crate containing wearables",
         COMMON,
         "crates/default",
-        CrateLootPool.WEARABLES
+        CrateLootPool.WEARABLES,
+        Material.LIGHT_BLUE_WOOL,
     ),
     PLAYER(
-        allTags.deserialize("<gradient:#DF6F69:#C45889:#823BC6><bold>Player Crate</bold></gradient>"),
-        listOf(
-            allTags.deserialize("<reset><!i><white>${UNCOMMON.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-            allTags.deserialize("<reset><!i><yellow>IDK YET.")
-        ),
+        "Player Crate",
+        "A crate containing player plushies",
         UNCOMMON,
         "crates/default",
-        CrateLootPool.PLAYER
-    )
+        CrateLootPool.PLAYER,
+        Material.PURPLE_WOOL,
+    );
+
+    val displayName: Component
+        get() = Component.text(crateName)
+            .color(TextColor.color(crateRarity.color.asRGB()))
+            .decoration(TextDecoration.ITALIC, false)
+            .decoration(TextDecoration.BOLD, true)
+
+    val loreLines: List<Component>
+        get() = listOf(
+            allTags.deserialize("<reset><!i><white>${crateRarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
+            Component.text(crateDescription)
+                .color(TextColor.color(0xFFFF55))
+                .decoration(TextDecoration.ITALIC, false),
+        )
+
+    val storedId: String
+        get() = name
+
+    val recipeKey: String
+        get() = "${name.lowercase()}_crate"
+
+    companion object {
+        fun fromStoredId(storedId: String?): CrateType? {
+            return entries.firstOrNull { it.storedId == storedId }
+        }
+    }
 }
