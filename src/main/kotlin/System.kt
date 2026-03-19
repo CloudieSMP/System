@@ -11,6 +11,7 @@ import org.incendo.cloud.paper.PaperCommandManager
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
+import util.ui.GamblingWindow
 import java.io.File
 
 @Suppress( "unstableApiUsage")
@@ -50,6 +51,8 @@ class System : JavaPlugin() {
         server.pluginManager.registerEvents(PlayerQuit(), this)
         server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(PlayerInteractEntity(), this)
+        server.pluginManager.registerEvents(PlayerItemConsume(), this)
+        server.pluginManager.registerEvents(GamblingWindow, this)
     }
 
     override fun reloadConfig() {
