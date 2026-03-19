@@ -6,6 +6,8 @@ import item.ItemRarity.COMMON
 import item.ItemType
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import io.papermc.paper.datacomponent.item.Equippable
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType.STRING
 import util.Keys.GENERIC_RARITY
@@ -118,6 +120,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "plushies/beauver"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     COFFEE_CUP(10,
@@ -157,6 +160,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/cat_ears"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     DOG_EARS(10,
@@ -170,6 +174,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/dog_ears"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     FOX_EARS(10,
@@ -183,6 +188,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/fox_ears"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     COOL_GLASSES(10,
@@ -196,6 +202,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/cool_glasses"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     HALO(10,
@@ -209,6 +216,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/halo"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     HEART_CROWN(10,
@@ -222,6 +230,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/heart_crown"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     ORCHID_CROWN(10,
@@ -235,6 +244,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/orchid_crown"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     ),
     HEART_GLASSES(10,
@@ -248,6 +258,7 @@ enum class CrateItem(val pctChanceToRoll: Int, val itemStack: ItemStack) {
             plushieMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, COMMON.name)
             this.itemMeta = plushieMeta
             setData(DataComponentTypes.ITEM_MODEL, NamespacedKey("cloudie", "wearables/heart_glasses"))
+            setData(DataComponentTypes.EQUIPPABLE, Equippable.equippable(EquipmentSlot.HEAD).build())
         }
     )
 }
