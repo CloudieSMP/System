@@ -4,6 +4,7 @@ import Config
 import ResourcePack
 import chat.Formatting
 import command.LiveUtil
+import library.HomeStorage
 import library.Translation
 import logger
 import net.kyori.adventure.audience.Audience
@@ -32,6 +33,7 @@ class PlayerJoin : Listener {
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
+        HomeStorage.preload(e.player.uniqueId)
         sendTabList(e.player)
 
         val brand = e.player.clientBrandName

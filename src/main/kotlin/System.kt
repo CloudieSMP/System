@@ -5,6 +5,7 @@ import event.block.CauldronListener
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import command.LiveUtil
+import library.HomeStorage
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -38,6 +39,7 @@ class System : JavaPlugin() {
     override fun onDisable() {
         this.logger.info("Stopping the Cloudie System plugin!")
         LiveUtil.shutdown()
+        HomeStorage.flushAllSync()
         VanishHelper.resetAllVisibility()
         VisualChat.clearChatEntities()
     }
