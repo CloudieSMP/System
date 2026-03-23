@@ -100,9 +100,8 @@ permissions:
   cloudie.command.spawn:
     description: Allows the player to use the spawn command.
   cloudie.command.streamermode:
-cloudie.command.streamermode:
-description: Allows the player to toggle streamer mode.
-cloudie.command.tpa:
-description: Allows the player to send tpa requests.
+    description: Allows the player to toggle streamer mode.
+  cloudie.command.tpa:
+    description: Allows the player to send tpa requests.
   cloudie.command.echo:
     description: Allows the player to use the echo command.
