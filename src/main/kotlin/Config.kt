@@ -1,4 +1,3 @@
-import command.Tpa
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.net.URI
 
