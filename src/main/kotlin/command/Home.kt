@@ -16,12 +16,14 @@ import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.annotations.processing.CommandContainer
 import org.incendo.cloud.annotations.suggestion.Suggestions
 import org.incendo.cloud.context.CommandContext
+import plugin
 import util.requirePlayer
 
 @Suppress("unused")
 @CommandContainer
 class Home {
-    private val maxHomes = 5
+    private val maxHomes: Int
+        get() = plugin.config.home.maxHomes
 
     @Command("homes")
     @CommandDescription("List your saved homes.")
