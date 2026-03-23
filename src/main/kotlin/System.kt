@@ -15,7 +15,7 @@ import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import util.ui.GamblingWindow
 import util.ui.CrateBrowserWindow
-import util.VanishHelper
+import library.VanishHelper
 import item.crate.CrateRecipes
 import java.io.File
 

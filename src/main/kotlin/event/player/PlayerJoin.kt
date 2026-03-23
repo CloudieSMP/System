@@ -13,7 +13,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
-import util.VanishHelper
+import library.VanishHelper
 import util.sha1
 import java.net.URI
 import java.net.http.HttpClient

@@ -1,10 +1,18 @@
+import command.Tpa
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.net.URI
 
 @ConfigSerializable
 data class Config(
     val links: List<Link>,
-    val resourcePacks: List<ResourcePack>
+    val resourcePacks: List<ResourcePack>,
+    val tpa: TpaConfig = TpaConfig()
+)
+
+@ConfigSerializable
+data class TpaConfig(
+    val requestExpireTime: Int = 30,
+    val tpaDelay: Int = 2
 )
 
 @ConfigSerializable
