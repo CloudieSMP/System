@@ -33,7 +33,7 @@ class Tpa {
     }
 
     @Command("tpahere <player>")
-    @CommandDescription("Request to teleport to another player.")
+    @CommandDescription("Request to teleport another player here.")
     @Permission("cloudie.command.tpa")
     fun tpahere(css: CommandSourceStack, @Argument("player") targetPlayer: Player) {
         createRequest(css, targetPlayer, TpaType.TPA_HERE)
@@ -114,7 +114,7 @@ class Tpa {
         }
 
         if (hasOutgoingRequest(player.uniqueId)) {
-            player.sendMessage(allTags.deserialize("<red>You already have an outgoing TPA request to this player."))
+            player.sendMessage(allTags.deserialize("<red>You already have an outgoing TPA request pending."))
             return
         }
 
