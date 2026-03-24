@@ -4,10 +4,10 @@ import chat.Formatting
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.entity.Player
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.annotations.processing.CommandContainer
+import util.requirePlayer
 
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
@@ -15,10 +15,7 @@ class Spawn {
     @Command("spawn")
     @Permission("cloudie.command.spawn")
     fun spawn(css: CommandSourceStack) {
-        val player = css.sender as? Player ?: run {
-            css.sender.sendMessage(Formatting.allTags.deserialize("<red>Only players can use this command.</red>"))
-            return
-        }
+        val player = css.requirePlayer() ?: return
 
         val world = Bukkit.getWorld("world")
         if (world == null) {

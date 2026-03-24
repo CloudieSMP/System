@@ -5,6 +5,7 @@ import event.block.CauldronListener
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import command.LiveUtil
+import library.HomeStorage
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.incendo.cloud.annotations.AnnotationParser
@@ -15,7 +16,7 @@ import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import util.ui.GamblingWindow
 import util.ui.CrateBrowserWindow
-import util.VanishHelper
+import library.VanishHelper
 import item.crate.CrateRecipes
 import java.io.File
 
@@ -38,6 +39,7 @@ class System : JavaPlugin() {
     override fun onDisable() {
         this.logger.info("Stopping the Cloudie System plugin!")
         LiveUtil.shutdown()
+        HomeStorage.flushAllSync()
         VanishHelper.resetAllVisibility()
         VisualChat.clearChatEntities()
     }

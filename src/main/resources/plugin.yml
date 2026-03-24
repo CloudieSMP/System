@@ -71,8 +71,10 @@ permissions:
       cloudie.command.renameitem: true
       cloudie.command.resetitemname: true
       cloudie.command.crates: true
+      cloudie.command.home: true
       cloudie.command.spawn: true
       cloudie.command.streamermode: true
+      cloudie.command.tpa: true
       cloudie.command.echo: true
 
   cloudie.command.hat:
@@ -93,9 +95,13 @@ permissions:
     description: Allows the player to reset item names.
   cloudie.command.crates:
     description: Allows the player to open the crates browser.
+  cloudie.command.home:
+    description: Allows the player to manage personal homes.
   cloudie.command.spawn:
     description: Allows the player to use the spawn command.
   cloudie.command.streamermode:
     description: Allows the player to toggle streamer mode.
+  cloudie.command.tpa:
+    description: Allows the player to send tpa requests.
   cloudie.command.echo:
     description: Allows the player to use the echo command.

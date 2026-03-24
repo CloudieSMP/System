@@ -1,8 +1,7 @@
-package util
+package library
 
 import chat.ChatUtility
 import chat.Formatting
-import library.Translation
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import plugin
