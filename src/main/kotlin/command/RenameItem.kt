@@ -21,7 +21,7 @@ class RenameItem {
 
     @Command("renameitem <name>")
     @CommandDescription("Renames an item at the cost of 1 lapis.")
-    @Permission("cloudie.command.renameitem")
+    @Permission("cloudie.cmd.renameitem")
     fun renameItem(css: CommandSourceStack, name: Array<String>) {
         val player = css.sender as? Player ?: return
 
@@ -51,7 +51,7 @@ class RenameItem {
 
     @Command("resetitemname")
     @CommandDescription("Resets the item's name to default.")
-    @Permission("cloudie.command.resetitemname")
+    @Permission("cloudie.cmd.resetitemname")
     fun resetItemName(css: CommandSourceStack) {
         val player = css.sender as? Player ?: return
 

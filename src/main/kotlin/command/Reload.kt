@@ -12,7 +12,7 @@ import plugin
 @CommandContainer
 class Reload {
     @Command("cloudie reload")
-    @Permission("cloudie.command.reload")
+    @Permission("cloudie.cmd.reload")
     fun reloadConfig(css: CommandSourceStack) {
         try {
             plugin.reloadConfig()

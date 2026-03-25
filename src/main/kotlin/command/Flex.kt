@@ -15,7 +15,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Flex {
     @Command("flex|showitem")
-    @Permission("cloudie.command.flex")
+    @Permission("cloudie.cmd.flex")
     fun flex(css: CommandSourceStack) {
         val player = css.sender as? Player ?: return
         Flexing.flex(player, null)

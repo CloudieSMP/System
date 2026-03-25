@@ -11,7 +11,7 @@ import util.requirePlayer
 @CommandContainer
 class Vanish {
     @Command("vanish")
-    @Permission("cloudie.command.vanish")
+    @Permission("cloudie.cmd.vanish")
     fun vanish(css: CommandSourceStack) {
         val player = css.requirePlayer() ?: return
         VanishHelper.toggleVanish(player)

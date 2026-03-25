@@ -13,7 +13,7 @@ import util.requirePlayer
 @CommandContainer
 class Spawn {
     @Command("spawn")
-    @Permission("cloudie.command.spawn")
+    @Permission("cloudie.cmd.spawn")
     fun spawn(css: CommandSourceStack) {
         val player = css.requirePlayer() ?: return
 

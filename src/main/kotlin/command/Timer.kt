@@ -24,7 +24,7 @@ import util.timeRemainingFormatted
 class Timer {
     @Command("timer start <time> [countdown]")
     @CommandDescription("Start a timer with a specified duration and optional countdown.")
-    @Permission("cloudie.command.timer")
+    @Permission("cloudie.cmd.timer")
     fun timerStart(css: CommandSourceStack, @Argument("time") @Range(min = "1", max="60") time: Int, @Argument("countdown") @Range(min = "-1", max="15") @Default("-1") countdown: Int) {
         if(css.sender is Player) {
             val player = css.sender as Player

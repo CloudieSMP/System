@@ -15,14 +15,14 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 class Announcement {
     @Command("announce <text>")
     @CommandDescription("Broadcasts the specified text.")
-    @Permission("cloudie.command.announce")
+    @Permission("cloudie.cmd.announce")
     fun announce(css: CommandSourceStack, @Argument("text") text: Array<String>) {
         Notification.announceServer("<yellow><b>Announcement<reset>", text.joinToString(" "))
     }
 
     @Command("announcerestart <time>")
     @CommandDescription("Broadcasts when the next restart will be.")
-    @Permission("cloudie.command.announce")
+    @Permission("cloudie.cmd.announce")
     fun announceRestart(css: CommandSourceStack, @Argument("time") time: Int) {
         Notification.announceServer(
             "<red><b>Server Restarting<reset>",

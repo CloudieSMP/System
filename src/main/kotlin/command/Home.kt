@@ -1,6 +1,6 @@
 package command
 
-import chat.Formatting
+import chat.Formatting.allTags
 import library.HomeStorage
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import net.kyori.adventure.text.Component
@@ -28,14 +28,14 @@ class Home {
 
     @Command("homes")
     @CommandDescription("List your saved homes.")
-    @Permission("cloudie.command.home")
+    @Permission("cloudie.cmd.home")
     fun homes(css: CommandSourceStack) {
         val player = css.requirePlayer() ?: return
         HomeStorage.listHomeNamesAsync(player.uniqueId) { homes ->
             val onlinePlayer = Bukkit.getPlayer(player.uniqueId) ?: return@listHomeNamesAsync
 
             if (homes.isEmpty()) {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<gray>You have no homes yet. Use <white>/sethome <name></white> to create one."))
+                onlinePlayer.sendMessage(allTags.deserialize("<gray>You have no homes yet. Use <white>/sethome <name></white> to create one."))
                 return@listHomeNamesAsync
             }
 
@@ -65,7 +65,7 @@ class Home {
 
     @Command("sethome <name>")
     @CommandDescription("Set a home at your current position.")
-    @Permission("cloudie.command.home")
+    @Permission("cloudie.cmd.home")
     fun sethome(
             css: CommandSourceStack,
             @Argument("name") name: String,
@@ -74,7 +74,7 @@ class Home {
         val playerId = player.uniqueId
         val homeLocation = player.location.clone()
         val sanitizedName = sanitizeName(name) ?: run {
-            player.sendMessage(Formatting.allTags.deserialize("<red>Home names must be 1-16 chars and use only letters, numbers, _ or -.</red>"))
+            player.sendMessage(allTags.deserialize("<red>Home names must be 1-16 chars and use only letters, numbers, _ or -.</red>"))
             return
         }
 
@@ -83,20 +83,20 @@ class Home {
             val homeCount = homes.size
             val existingHome = homes.containsKey(sanitizedName)
             if (!existingHome && homeCount >= maxHomes) {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<red>You reached the home limit <dark_gray>($maxHomes)</dark_gray>. Delete one first with <white>/delhome <name></white>."))
+                onlinePlayer.sendMessage(allTags.deserialize("<red>You reached the home limit <dark_gray>($maxHomes)</dark_gray>. Delete one first with <white>/delhome <name></white>."))
                 return@snapshotHomesAsync
             }
             if (existingHome && !forced) {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<yellow>Home <aqua>$sanitizedName</aqua> already exists. Use <white>/sethome $sanitizedName --force</white> to overwrite it.</yellow>"))
+                onlinePlayer.sendMessage(allTags.deserialize("<yellow>Home <aqua>$sanitizedName</aqua> already exists. Use <white>/sethome $sanitizedName --force</white> to overwrite it.</yellow>"))
                 return@snapshotHomesAsync
             }
 
             HomeStorage.saveHomeAsync(playerId, sanitizedName, homeLocation) { outcome ->
                 val refreshedPlayer = Bukkit.getPlayer(playerId) ?: return@saveHomeAsync
                 when (outcome) {
-                    HomeStorage.SaveOutcome.CREATED -> refreshedPlayer.sendMessage(Formatting.allTags.deserialize("<green>Home <aqua>$sanitizedName</aqua> created."))
-                    HomeStorage.SaveOutcome.UPDATED -> refreshedPlayer.sendMessage(Formatting.allTags.deserialize("<yellow>Home <aqua>$sanitizedName</aqua> updated."))
-                    HomeStorage.SaveOutcome.FAILED -> refreshedPlayer.sendMessage(Formatting.allTags.deserialize("<red>Could not save home right now. Please try again.</red>"))
+                    HomeStorage.SaveOutcome.CREATED -> refreshedPlayer.sendMessage(allTags.deserialize("<green>Home <aqua>$sanitizedName</aqua> created."))
+                    HomeStorage.SaveOutcome.UPDATED -> refreshedPlayer.sendMessage(allTags.deserialize("<yellow>Home <aqua>$sanitizedName</aqua> updated."))
+                    HomeStorage.SaveOutcome.FAILED -> refreshedPlayer.sendMessage(allTags.deserialize("<red>Could not save home right now. Please try again.</red>"))
                 }
             }
         }
@@ -104,34 +104,34 @@ class Home {
 
     @Command("home <name>")
     @CommandDescription("Teleport to one of your homes.")
-    @Permission("cloudie.command.home")
+    @Permission("cloudie.cmd.home")
     fun homesTeleport(css: CommandSourceStack, @Argument(value = "name", suggestions = "player-homes") name: String) {
         val player = css.requirePlayer() ?: return
         val playerId = player.uniqueId
         val sanitizedName = sanitizeName(name) ?: run {
-            player.sendMessage(Formatting.allTags.deserialize("<red>Invalid home name.</red>"))
+            player.sendMessage(allTags.deserialize("<red>Invalid home name.</red>"))
             return
         }
 
         HomeStorage.loadHomeAsync(playerId, sanitizedName) { home ->
             val onlinePlayer = Bukkit.getPlayer(playerId) ?: return@loadHomeAsync
             val targetHome = home ?: run {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<red>Home <aqua>$sanitizedName</aqua> does not exist.</red>"))
+                onlinePlayer.sendMessage(allTags.deserialize("<red>Home <aqua>$sanitizedName</aqua> does not exist.</red>"))
                 return@loadHomeAsync
             }
 
             val success = onlinePlayer.teleport(targetHome)
             if (success) {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<green>Teleported to <aqua>$sanitizedName</aqua>."))
+                onlinePlayer.sendMessage(allTags.deserialize("<green>Teleported to <aqua>$sanitizedName</aqua>."))
             } else {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<red>Teleport failed. The location may be invalid.</red>"))
+                onlinePlayer.sendMessage(allTags.deserialize("<red>Teleport failed. The location may be invalid.</red>"))
             }
         }
     }
 
     @Command("delhome <name>")
     @CommandDescription("Delete one of your homes.")
-    @Permission("cloudie.command.home")
+    @Permission("cloudie.cmd.home")
     fun delhome(
             css: CommandSourceStack,
             @Argument(value = "name", suggestions = "player-homes") name: String,
@@ -139,24 +139,23 @@ class Home {
         val player = css.requirePlayer() ?: return
         val playerId = player.uniqueId
         val sanitizedName = sanitizeName(name) ?: run {
-            player.sendMessage(Formatting.allTags.deserialize("<red>Invalid home name.</red>"))
+            player.sendMessage(allTags.deserialize("<red>Invalid home name.</red>"))
             return
         }
         if (!forced) {
-            player.sendMessage(Formatting.allTags.deserialize("<yellow>Are you sure you want to delete <aqua>$sanitizedName</aqua>? Use <white>/delhome $sanitizedName --force</white> to confirm.</yellow>"))
+            player.sendMessage(allTags.deserialize("<yellow>Are you sure you want to delete <aqua>$sanitizedName</aqua>? Use <white>/delhome $sanitizedName --force</white> to confirm.</yellow>"))
             return
         }
 
         HomeStorage.deleteHomeAsync(playerId, sanitizedName) { deleted ->
             val onlinePlayer = Bukkit.getPlayer(playerId) ?: return@deleteHomeAsync
             if (deleted) {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<green>Deleted home <aqua>$sanitizedName</aqua>."))
+                onlinePlayer.sendMessage(allTags.deserialize("<green>Deleted home <aqua>$sanitizedName</aqua>."))
             } else {
-                onlinePlayer.sendMessage(Formatting.allTags.deserialize("<red>Home <aqua>$sanitizedName</aqua> does not exist.</red>"))
+                onlinePlayer.sendMessage(allTags.deserialize("<red>Home <aqua>$sanitizedName</aqua> does not exist.</red>"))
             }
         }
     }
-
 
     private fun sanitizeName(input: String): String? {
         val trimmed = input.trim().lowercase()

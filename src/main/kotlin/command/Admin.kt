@@ -17,7 +17,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 class Admin {
     @Command("ac <text>")
     @CommandDescription("Sends the specified message to admin chat.")
-    @Permission("cloudie.command.admin_chat")
+    @Permission("cloudie.cmd.admin_chat")
     fun adminChat(css: CommandSourceStack, @Argument("text") text: Array<String>) {
         if(css.sender is Player) {
             val player = css.sender as Player
@@ -27,7 +27,7 @@ class Admin {
 
     @Command("dc <text>")
     @CommandDescription("Sends the specified message to dev chat.")
-    @Permission("cloudie.command.dev_chat")
+    @Permission("cloudie.cmd.dev_chat")
     fun devChat(css: CommandSourceStack, @Argument("text") text: Array<String>) {
         if(css.sender is Player) {
             val player = css.sender as Player

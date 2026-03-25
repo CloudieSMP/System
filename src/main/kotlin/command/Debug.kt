@@ -15,7 +15,7 @@ import util.requirePlayer
 @CommandContainer
 class Debug {
     @Command("debug crate <type>")
-    @Permission("cloudie.command.debug")
+    @Permission("cloudie.cmd.debug")
     fun debugCrate(css: CommandSourceStack, @Argument("type") type: CrateType) {
         val player = css.requirePlayer() ?: return
 
@@ -23,7 +23,7 @@ class Debug {
         player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a crate!"))
     }
     @Command("debug crate item <type>")
-    @Permission("cloudie.command.debug")
+    @Permission("cloudie.cmd.debug")
     fun debugCrateItem(css: CommandSourceStack, @Argument("type") item: CrateItem) {
         val player = css.requirePlayer() ?: return
 

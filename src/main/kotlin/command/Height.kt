@@ -22,7 +22,7 @@ class Height {
 
     @Command("height <cm>")
     @CommandDescription("Set your in-game scale based on your real-life height in cm.")
-    @Permission("cloudie.command.height")
+    @Permission("cloudie.cmd.height")
     fun heightSelf(css: CommandSourceStack, @Argument("cm") cm: Int) {
         val player = css.sender as? Player ?: return
         applyHeight(player, cm, player)
@@ -30,7 +30,7 @@ class Height {
 
     @Command("height reset")
     @CommandDescription("Reset your in-game scale to default.")
-    @Permission("cloudie.command.height")
+    @Permission("cloudie.cmd.height")
     fun heightResetSelf(css: CommandSourceStack) {
         val player = css.sender as? Player ?: return
         applyHeight(player, DEFAULT_HEIGHT, player)
@@ -38,7 +38,7 @@ class Height {
 
     @Command("height <cm> <player>")
     @CommandDescription("Set another player's in-game scale based on a height in cm.")
-    @Permission("cloudie.command.height.others")
+    @Permission("cloudie.cmd.height.others")
     fun heightOther(css: CommandSourceStack, @Argument("cm") cm: Int, @Argument("player") target: Player) {
         val sender = css.sender as? Player ?: return
         applyHeight(sender, cm, target)
@@ -46,7 +46,7 @@ class Height {
 
     @Command("height reset <player>")
     @CommandDescription("Reset another player's in-game scale to default.")
-    @Permission("cloudie.command.height.others")
+    @Permission("cloudie.cmd.height.others")
     fun heightResetOther(css: CommandSourceStack, @Argument("player") target: Player) {
         val sender = css.sender as? Player ?: return
         applyHeight(sender, DEFAULT_HEIGHT, target)

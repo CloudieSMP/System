@@ -11,7 +11,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Seed {
     @Command("seed")
-    @Permission("cloudie.command.seed")
+    @Permission("cloudie.cmd.seed")
     fun seed(css: CommandSourceStack) {
         css.sender.sendMessage(Formatting.allTags.deserialize("<rainbow>made you look lol</rainbow>"))
     }

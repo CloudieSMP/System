@@ -46,10 +46,16 @@ dependencies {
     implementation("org.incendo:cloud-paper:2.0.0-beta.13")
     implementation("org.incendo:cloud-annotations:2.0.0")
     implementation("org.incendo:cloud-kotlin-extensions:2.0.0")
-    kapt("org.incendo:cloud-annotations:2.0.0")
-
+    implementation("org.incendo:cloud-kotlin-coroutines-annotations:2.0.0")
+    kapt("org.incendo:cloud-kotlin-coroutines-annotations:2.0.0")
+    implementation("org.incendo:cloud-kotlin-extensions:2.0.0")
+    implementation("org.incendo:cloud-processors-confirmation:1.0.0-rc.1")
+    implementation("io.ktor:ktor-client-core:2.3.13")
+    implementation("io.ktor:ktor-client-cio:2.3.5")
+    implementation("io.ktor:ktor-client-logging:2.0.3")
     implementation("org.spongepowered:configurate-yaml:4.2.0")
     implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 }
 
 tasks {

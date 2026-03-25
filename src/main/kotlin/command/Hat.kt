@@ -13,7 +13,7 @@ import util.requirePlayer
 @CommandContainer
 class Hat {
         @Command("hat")
-        @Permission("cloudie.command.hat")
+        @Permission("cloudie.cmd.hat")
         fun hat(css: CommandSourceStack) {
             val player = css.requirePlayer() ?: return
             val itemInHand = player.inventory.itemInMainHand

@@ -10,7 +10,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Echo {
     @Command("echo <text>")
-    @Permission("cloudie.command.echo")
+    @Permission("cloudie.cmd.echo")
     fun echo(css: CommandSourceStack, text: Array<String>) {
         css.sender.sendMessage(Formatting.restrictedTags.deserialize(text.joinToString(" ")))
     }

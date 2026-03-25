@@ -26,82 +26,82 @@ permissions:
     description: Allows the player to use all admin commands.
     default: op
     children:
-      cloudie.command.reload: true
-      cloudie.command.admin_chat: true
-      cloudie.command.dev_chat: true
-      cloudie.command.vanish: true
-      cloudie.command.debug: true
-      cloudie.command.announce: true
-      cloudie.command.timer: true
-      cloudie.command.height.others: true
+      cloudie.cmd.reload: true
+      cloudie.cmd.admin_chat: true
+      cloudie.cmd.dev_chat: true
+      cloudie.cmd.vanish: true
+      cloudie.cmd.debug: true
+      cloudie.cmd.announce: true
+      cloudie.cmd.timer: true
+      cloudie.cmd.height.others: true
 
   cloudie.group.dev:
     description: Allows the player to use developer chat and receive developer messages.
     default: false
     children:
-      cloudie.command.dev_chat: true
+      cloudie.cmd.dev_chat: true
 
-  cloudie.command.reload:
+  cloudie.cmd.reload:
     description: Allows the player to reload the plugin.
-  cloudie.command.admin_chat:
+  cloudie.cmd.admin_chat:
     description: Allows the player to use the admin chat command.
-  cloudie.command.dev_chat:
+  cloudie.cmd.dev_chat:
     description: Allows the player to use the developer chat command.
-  cloudie.command.vanish:
+  cloudie.cmd.vanish:
     description: Allows the player to use the vanish command.
-  cloudie.command.debug:
+  cloudie.cmd.debug:
     description: Allows the player to use debug commands.
-  cloudie.command.announce:
+  cloudie.cmd.announce:
     description: Allows the player to use the announce command.
-  cloudie.command.timer:
+  cloudie.cmd.timer:
     description: Allows the player to use the timer command.
-  cloudie.command.height.others:
+  cloudie.cmd.height.others:
     description: Allows the player to check height of other players.
 
   cloudie.group.default:
     description: Allows the player to use all default commands.
     default: true
     children:
-      cloudie.command.hat: true
-      cloudie.command.help: true
-      cloudie.command.seed: true
-      cloudie.command.height: true
-      cloudie.command.flex: true
-      cloudie.command.book: true
-      cloudie.command.renameitem: true
-      cloudie.command.resetitemname: true
-      cloudie.command.crates: true
-      cloudie.command.home: true
-      cloudie.command.spawn: true
-      cloudie.command.streamermode: true
-      cloudie.command.tpa: true
-      cloudie.command.echo: true
+      cloudie.cmd.hat: true
+      cloudie.cmd.help: true
+      cloudie.cmd.seed: true
+      cloudie.cmd.height: true
+      cloudie.cmd.flex: true
+      cloudie.cmd.book: true
+      cloudie.cmd.renameitem: true
+      cloudie.cmd.resetitemname: true
+      cloudie.cmd.crates: true
+      cloudie.cmd.home: true
+      cloudie.cmd.spawn: true
+      cloudie.cmd.streamermode: true
+      cloudie.cmd.tpa: true
+      cloudie.cmd.echo: true
 
-  cloudie.command.hat:
+  cloudie.cmd.hat:
     description: Allows the player to use the hat command.
-  cloudie.command.help:
+  cloudie.cmd.help:
     description: Allows the player to use the help command.
-  cloudie.command.seed:
+  cloudie.cmd.seed:
     description: Allows the player to use the seed command.
-  cloudie.command.height:
+  cloudie.cmd.height:
     description: Allows the player to use the height command.
-  cloudie.command.flex:
+  cloudie.cmd.flex:
     description: Allows the player to use the flex command.
-  cloudie.command.book:
+  cloudie.cmd.book:
     description: Allows the player to use book commands.
-  cloudie.command.renameitem:
+  cloudie.cmd.renameitem:
     description: Allows the player to rename items.
-  cloudie.command.resetitemname:
+  cloudie.cmd.resetitemname:
     description: Allows the player to reset item names.
-  cloudie.command.crates:
+  cloudie.cmd.crates:
     description: Allows the player to open the crates browser.
-  cloudie.command.home:
+  cloudie.cmd.home:
     description: Allows the player to manage personal homes.
-  cloudie.command.spawn:
+  cloudie.cmd.spawn:
     description: Allows the player to use the spawn command.
-  cloudie.command.streamermode:
+  cloudie.cmd.streamermode:
     description: Allows the player to toggle streamer mode.
-  cloudie.command.tpa:
+  cloudie.cmd.tpa:
     description: Allows the player to send tpa requests.
-  cloudie.command.echo:
+  cloudie.cmd.echo:
     description: Allows the player to use the echo command.

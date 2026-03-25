@@ -13,7 +13,7 @@ import util.ui.CrateBrowserWindow
 class Crates {
     @Command("crates")
     @CommandDescription("Lists all the crates.")
-    @Permission("cloudie.command.crates")
+    @Permission("cloudie.cmd.crates")
     fun crates(css: CommandSourceStack) {
         val player = css.requirePlayer() ?: return
 

@@ -18,7 +18,7 @@ import java.util.UUID
 class Live {
     @Command("live|streamermode")
     @CommandDescription("Toggle Streamer mode.")
-    @Permission("cloudie.command.streamermode")
+    @Permission("cloudie.cmd.streamermode")
     fun live(css: CommandSourceStack) {
         val player = css.sender as? Player ?: return
         if (LiveUtil.isLive(player)) {

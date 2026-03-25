@@ -29,21 +29,21 @@ class Tpa {
 
     @Command("tpa <player>")
     @CommandDescription("Request to teleport to another player.")
-    @Permission("cloudie.command.tpa")
+    @Permission("cloudie.cmd.tpa")
     fun tpa(css: CommandSourceStack, @Argument("player") targetPlayer: Player) {
         createRequest(css, targetPlayer, TpaType.TPA_THERE)
     }
 
     @Command("tpahere <player>")
     @CommandDescription("Request to teleport another player here.")
-    @Permission("cloudie.command.tpa")
+    @Permission("cloudie.cmd.tpa")
     fun tpahere(css: CommandSourceStack, @Argument("player") targetPlayer: Player) {
         createRequest(css, targetPlayer, TpaType.TPA_HERE)
     }
 
     @Command("tpaccept|tpyes <player>")
     @CommandDescription("Accept a tpa request.")
-    @Permission("cloudie.command.tpa")
+    @Permission("cloudie.cmd.tpa")
     fun tpaccept(
         css: CommandSourceStack,
         @Argument(value = "player", suggestions = "incoming-tpa-requesters") requesterName: String
@@ -97,7 +97,7 @@ class Tpa {
 
     @Command("tpdeny|tpno <player>")
     @CommandDescription("Deny a tpa request.")
-    @Permission("cloudie.command.tpa")
+    @Permission("cloudie.cmd.tpa")
     fun tpdeny(
         css: CommandSourceStack,
         @Argument(value = "player", suggestions = "incoming-tpa-requesters") requesterName: String

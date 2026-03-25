@@ -16,7 +16,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Book {
     @Command("book author <name>")
-    @Permission("cloudie.command.book")
+    @Permission("cloudie.cmd.book")
     fun setAuthor(css: CommandSourceStack, name: Array<String>) {
         if(css.sender is Player) {
             val player = css.sender as Player
@@ -35,7 +35,7 @@ class Book {
     }
 
     @Command("book title <title>")
-    @Permission("cloudie.command.book")
+    @Permission("cloudie.cmd.book")
     fun setTitle(css: CommandSourceStack, title: Array<String>) {
         if(css.sender is Player) {
             val player = css.sender as Player

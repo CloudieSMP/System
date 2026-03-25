@@ -13,7 +13,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Help {
     @Command("help")
-    @Permission("cloudie.command.help")
+    @Permission("cloudie.cmd.help")
     fun help(css: CommandSourceStack) {
         css.sender.sendMessage(Formatting.allTags.deserialize("<yellow>This is a fucking placeholder"))
     }

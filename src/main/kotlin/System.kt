@@ -18,11 +18,24 @@ import util.ui.GamblingWindow
 import util.ui.CrateBrowserWindow
 import library.VanishHelper
 import item.crate.CrateRecipes
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+import org.incendo.cloud.description.CommandDescription
+import org.incendo.cloud.processors.cache.SimpleCache
+import org.incendo.cloud.processors.confirmation.ConfirmationContext
+import org.incendo.cloud.processors.confirmation.ConfirmationConfiguration
+import org.incendo.cloud.processors.confirmation.ConfirmationManager
+import org.incendo.cloud.processors.confirmation.annotation.ConfirmationBuilderModifier
 import java.io.File
+import java.time.Duration
+import util.ResourcePacker
 
 @Suppress( "unstableApiUsage")
 class System : JavaPlugin() {
     private lateinit var commandManager: PaperCommandManager<CommandSourceStack>
+    private lateinit var annotationParser: AnnotationParser<CommandSourceStack>
     private val playerJoinListener = PlayerJoin()
     lateinit var config: Config
         private set
@@ -30,6 +43,11 @@ class System : JavaPlugin() {
     override fun onEnable() {
         this.logger.info("Starting the Cloudie System plugin!")
         reloadConfig()
+        if (ResourcePacker.refreshFromUrl()) {
+            logger.info("Resource pack cache populated on startup.")
+        } else {
+            logger.warning("Resource pack cache could not be populated on startup. Use /pack refresh after fixing the resource pack URLs.")
+        }
         setupEvents()
         registerCommands()
         CrateRecipes.registerAll()
@@ -49,8 +67,57 @@ class System : JavaPlugin() {
             .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
             .buildOnEnable(this)
 
-        val annotationParser = AnnotationParser(commandManager, CommandSourceStack::class.java)
+        annotationParser = AnnotationParser(commandManager, CommandSourceStack::class.java)
+        setupCommandConfirmation()
         annotationParser.parseContainers()
+    }
+
+    private fun setupCommandConfirmation() {
+        logger.info("Setting up command confirmation.")
+        ConfirmationBuilderModifier.install(annotationParser)
+
+        val confirmationCache = SimpleCache
+            .of<String, ConfirmationContext<CommandSourceStack>>()
+            .keyExtractingView<CommandSourceStack> { css -> confirmationKey(css.sender) }
+
+        val confirmationConfig = ConfirmationConfiguration.builder<CommandSourceStack>()
+            .cache(confirmationCache)
+            .noPendingCommandNotifier { css ->
+                css.sender.sendMessage(
+                    Component.text(
+                        "You do not have any pending commands.",
+                        NamedTextColor.RED
+                    )
+                ) }
+            .confirmationRequiredNotifier { css, ctx ->
+                val commandText = ctx.commandContext().rawInput().input().trim().ifEmpty { "<unknown>" }
+                css.sender.sendMessage(
+                    Component.text("Confirm command ", NamedTextColor.RED).append(
+                        Component.text("'/$commandText' ", NamedTextColor.GREEN)
+                    ).append(Component.text("by running ", NamedTextColor.RED)).append(
+                        Component.text("'/confirm' ", NamedTextColor.YELLOW)
+                    ).append(Component.text("to execute.", NamedTextColor.RED))
+                ) }
+            .expiration(Duration.ofSeconds(30))
+            .build()
+
+        val confirmationManager = ConfirmationManager.confirmationManager(confirmationConfig)
+        commandManager.registerCommandPostProcessor(confirmationManager.createPostprocessor())
+
+        commandManager.command(
+            commandManager.commandBuilder("confirm")
+                .handler(confirmationManager.createExecutionHandler())
+                .commandDescription(CommandDescription.commandDescription("Confirm a pending command."))
+                .build()
+        )
+    }
+
+    private fun confirmationKey(sender: CommandSender): String {
+        return if (sender is Player) {
+            "player:${sender.uniqueId}"
+        } else {
+            "sender:${sender.name.lowercase()}"
+        }
     }
 
     private fun setupEvents() {
@@ -66,7 +133,6 @@ class System : JavaPlugin() {
     }
 
     private fun applyConfig(config: Config) {
-        playerJoinListener.updateConfig(config)
 
         val serverLinks = Bukkit.getServerLinks()
         serverLinks.links.toList().forEach(serverLinks::removeLink)
