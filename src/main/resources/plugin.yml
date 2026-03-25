@@ -76,6 +76,7 @@ permissions:
       cloudie.cmd.streamermode: true
       cloudie.cmd.tpa: true
       cloudie.cmd.echo: true
+      cloudie.cmd.mail: true
 
   cloudie.cmd.hat:
     description: Allows the player to use the hat command.
@@ -105,3 +106,5 @@ permissions:
     description: Allows the player to send tpa requests.
   cloudie.cmd.echo:
     description: Allows the player to use the echo command.
+  cloudie.cmd.mail:
+    description: Allows the player to use mailbox commands.

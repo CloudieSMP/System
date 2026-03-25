@@ -3,6 +3,7 @@ package event.player
 import chat.Formatting
 import command.LiveUtil
 import library.HomeStorage
+import library.MailStorage
 import library.Translation
 import logger
 import net.kyori.adventure.audience.Audience
@@ -21,6 +22,7 @@ class PlayerJoin : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
         HomeStorage.preload(e.player.uniqueId)
+        MailStorage.preload(e.player.uniqueId)
         sendTabList(e.player)
 
         val brand = e.player.clientBrandName
@@ -41,6 +43,11 @@ class PlayerJoin : Listener {
         VanishHelper.syncVisibilityForJoin(e.player)
 
         e.player.sendLinks(Bukkit.getServerLinks())
+        MailStorage.hasNewMailAsync(e.player.uniqueId) { hasNewMail ->
+            if (hasNewMail) {
+                e.player.sendMessage(mm.deserialize("<green>You have new mail! Use <white><click:run_command:/mail inbox>/mail inbox </white>to check it out."))
+            }
+        }
     }
 
     private fun sendTabList(audience: Audience) {
