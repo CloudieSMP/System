@@ -16,7 +16,6 @@ import org.bukkit.Material
  * @param crateRarity The rarity of the crate, which determines the color of the crate's name and lore
  * @param crateMaterial The item model path used for this crate
  * @param lootPool The loot pool to pull from when generating crate rewards
- * @param recipeAccentMaterial The center ingredient used for this crate's crafting recipe
  */
 enum class CrateType(
     private val crateName: String,
@@ -24,7 +23,6 @@ enum class CrateType(
     val crateRarity: ItemRarity,
     val crateMaterial: String,
     val lootPool: CrateLootPool,
-    val recipeAccentMaterial: Material,
 ) {
     PLUSHIE(
         "Plushie Crate",
@@ -32,7 +30,6 @@ enum class CrateType(
         COMMON,
         "crates/blue",
         CrateLootPool.PLUSHIE,
-        Material.PINK_WOOL,
     ),
     WEARABLES(
         "Wearables Crate",
@@ -40,7 +37,6 @@ enum class CrateType(
         COMMON,
         "crates/default",
         CrateLootPool.WEARABLES,
-        Material.LIGHT_BLUE_WOOL,
     ),
     PLAYER(
         "Player Crate",
@@ -48,7 +44,13 @@ enum class CrateType(
         UNCOMMON,
         "crates/default",
         CrateLootPool.PLAYER,
-        Material.PURPLE_WOOL,
+    ),
+    CHARACTER(
+        "Character Crate",
+        "A crate containing character plushies",
+        RARE,
+        "crates/default",
+        CrateLootPool.CHARACTER,
     );
 
     val displayName: Component

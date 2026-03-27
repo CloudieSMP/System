@@ -1,5 +1,6 @@
 package event.entity
 
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.ItemFrame
@@ -28,7 +29,7 @@ object ItemFrameInteract {
                 val amount = player.inventory.itemInMainHand.amount
                 val location = itemFrame.location.toBlockLocation().add(0.5, 0.5, 0.5)
                 itemFrame.location.world.spawnParticle(Particle.WAX_ON, location, 10, 0.5, 0.5, 0.5)
-                player.inventory.itemInMainHand.amount = amount - 1
+                if (player.gameMode == GameMode.SURVIVAL) player.inventory.itemInMainHand.amount = amount - 1
                 event.isCancelled = true
             }
 

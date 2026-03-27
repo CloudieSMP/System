@@ -12,7 +12,7 @@ import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.annotations.processing.CommandContainer
-import util.isHoldingItemInMainHand
+import util.areYouHoldingSomething
 import util.hasLapisInInventory
 
 @Suppress("unused", "unstableApiUsage")
@@ -25,7 +25,7 @@ class RenameItem {
     fun renameItem(css: CommandSourceStack, name: Array<String>) {
         val player = css.sender as? Player ?: return
 
-        if (!player.isHoldingItemInMainHand()) {
+        if (!player.areYouHoldingSomething()) {
             player.sendMessage(Formatting.allTags.deserialize("<red>You need to be holding an item to rename."))
             return
         }
@@ -55,7 +55,7 @@ class RenameItem {
     fun resetItemName(css: CommandSourceStack) {
         val player = css.sender as? Player ?: return
 
-        if (!player.isHoldingItemInMainHand()) {
+        if (!player.areYouHoldingSomething()) {
             player.sendMessage(Formatting.allTags.deserialize("<red>You need to be holding an item to reset its name."))
             return
         }

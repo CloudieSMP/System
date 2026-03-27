@@ -27,5 +27,9 @@ enum class CrateLootPool(val possibleItems: List<CrateItem>) {
         SEBIANN_CLASSIC,
         COOKIE,
         BEAUVER
+    )),
+    CHARACTER(listOf(
+        N,
+        ASTARION
     ))
 }

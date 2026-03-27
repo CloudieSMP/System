@@ -18,7 +18,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import util.ui.GamblingWindow
 import util.ui.CrateBrowserWindow
 import library.VanishHelper
-import item.crate.CrateRecipes
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.command.CommandSender
@@ -51,7 +50,6 @@ class System : JavaPlugin() {
         }
         setupEvents()
         registerCommands()
-        CrateRecipes.registerAll()
         VisualChat.clearChatEntities()
     }
 

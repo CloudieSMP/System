@@ -65,10 +65,14 @@ enum class CrateItem(
     RAMEN_BOWL(10, "Ramen Bowl Plushie", COMMON, "A cute ramen bowl plushie", "plushies/ramen_bowl"),
 
     // Player plushies
-    SEBIANN_CLASSIC(1, "Sebiann Classic Plushie", RARE, "A classic Sebiann plushie\nA precious collector's item\nExtremely limited!", "plushies/player/sebiann-classic"),
+    SEBIANN_CLASSIC(1, "Sebiann Classic Plushie", RARE, "A classic Sebiann plushie\nA precious collector's item\nExtremely limited!", "plushies/player/sebiann_classic"),
     SEBIANN(100, "Sebiann Plushie", COMMON, "A cute Sebiann plushie", "plushies/player/sebiann"),
     COOKIE(100, "Cookie Plushie", COMMON, "A cute Cookie plushie", "plushies/player/cookie"),
     BEAUVER(100, "Beauver Plushie", COMMON, "A cute Beauver plushie", "plushies/player/beauver"),
+
+    // Character plushies
+    N(10, "N Plushie", COMMON, "N from Pokemon", "plushies/character/n_slim"),
+    ASTARION(10, "Astarion Plushie", COMMON, "Astarion from Baldur's Gate 3", "plushies/character/astarion_wide"),
 
     // Wearables
     CAT_EARS(10, "Cat Ears", COMMON, "Cute cat ears", "wearables/cat_ears"),

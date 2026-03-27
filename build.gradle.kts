@@ -78,6 +78,7 @@ tasks {
 
         relocate("org.incendo", "${shadowPkg}.org.incendo")
         relocate("org.spongepowered", "${shadowPkg}.org.spongepowered")
+        relocate("fr.mrmicky", "${shadowPkg}.fr.mrmicky")
 
         mergeServiceFiles()
     }
