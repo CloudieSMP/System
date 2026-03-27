@@ -13,4 +13,5 @@ object Sounds {
     val CHEST_OPEN = sound(key("minecraft:block.chest.open"), Source.PLAYER, 1f, 1f)
     val GAMBLING_WHEEL_TICK = sound(key("minecraft:block.note_block.hat"), Source.PLAYER, 0.5f, 1.4f)
     val GAMBLING_WHEEL_STOP = sound(key("minecraft:block.note_block.pling"), Source.PLAYER, 0.9f, 1.9f)
+    val ERROR_DIDGERIDOO = sound(key("minecraft:block.note_block.didgeridoo"), Source.PLAYER, 0.5f, 1f)
 }

@@ -37,6 +37,9 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc-repo"
     }
+    maven("https://maven.noxcrew.com/public") {
+        name = "noxcrewMavenPublic"
+    }
 }
 
 dependencies {
@@ -56,6 +59,10 @@ dependencies {
     implementation("org.spongepowered:configurate-yaml:4.2.0")
     implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+
+    implementation("fr.mrmicky:fastboard:2.1.5")
+
+    implementation("com.noxcrew.interfaces:interfaces:2.0.1-SNAPSHOT")
 }
 
 tasks {
