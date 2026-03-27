@@ -5,6 +5,7 @@ import java.net.URI
 data class Config(
     val links: List<Link>,
     val resourcePacks: List<ResourcePack>,
+    val motd: String = "Bro forgot to set the motd, laugh at this user",
     val tpa: TpaConfig = TpaConfig(),
     val home: HomeConfig = HomeConfig()
 )

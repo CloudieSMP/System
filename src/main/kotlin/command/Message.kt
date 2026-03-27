@@ -28,7 +28,7 @@ class Message {
      * @param recipient Player that should receive the message
      * @param text The message that should be sent
      */
-    @Command("msg|w|m|tell|explain|beg <player> <text>")
+    @Command("msg|w|m|tell <player> <text>")
     @CommandDescription("Send somebody a private message.")
     fun msg(css: CommandSourceStack, @Argument("player") recipient: Player, @Argument("text") text: Array<String>) {
         if(css.sender is Player) {

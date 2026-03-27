@@ -15,6 +15,11 @@ resource-packs:
     hash: ""
     priority: 100
 
+# Server MOTD displayed in the server list. Supports MiniMessage.
+motd: |-
+  <gradient:#ff530d:#ff77a4>--- Cloudie SMP ☁︎ Season 10! ---</gradient>
+  <gradient:#ff9468:#ffb1c9>         ╰┈➤Join today!</gradient>
+
 tpa:
   # Time in seconds before a tpa request expires.
   request-expire-time: 60

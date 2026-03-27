@@ -44,6 +44,7 @@ class System : JavaPlugin() {
     override fun onEnable() {
         this.logger.info("Starting the Cloudie System plugin!")
         reloadConfig()
+        server.motd(allTags.deserialize(config.motd))
         if (ResourcePacker.refreshFromUrl()) {
             logger.info("Resource pack cache populated on startup.")
         } else {
