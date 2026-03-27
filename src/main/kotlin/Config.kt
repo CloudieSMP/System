@@ -7,7 +7,8 @@ data class Config(
     val resourcePacks: List<ResourcePack>,
     val motd: String = "Bro forgot to set the motd, laugh at this user",
     val tpa: TpaConfig = TpaConfig(),
-    val home: HomeConfig = HomeConfig()
+    val home: HomeConfig = HomeConfig(),
+    val discord: DiscordConfig = DiscordConfig()
 )
 
 @ConfigSerializable
@@ -21,6 +22,10 @@ data class HomeConfig(
     val maxHomes: Int = 5
 )
 
+@ConfigSerializable
+data class DiscordConfig(
+    val reportWebhookUrl: String = ""
+)
 
 @ConfigSerializable
 data class Link(val component: String, val uri: URI, val order: Int)

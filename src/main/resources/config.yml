@@ -27,3 +27,7 @@ tpa:
   tpa-delay: 2
 home:
   max-homes: 5
+
+discord:
+  # Webhook URL for player reports. Leave empty to disable.
+  report-webhook-url: ""
