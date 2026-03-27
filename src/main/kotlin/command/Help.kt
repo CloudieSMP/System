@@ -18,7 +18,11 @@ class Help {
     @Permission("cloudie.cmd.help")
     fun help(css: CommandSourceStack) {
         css.sender.sendMessage(allTags.deserialize("<yellow>These are the featured Commands:"))
-        css.sender.sendMessage(allTags.deserialize(HelpHelper.featuredCommands.joinToString("\n") { "<gold> - <click:run_command:/help $it><white>/$it</click>" }))
+        for (featured in HelpHelper.featuredCommands) {
+            val shortDescription = HelpHelper.getCommandShortHelp(featured, false)
+            if (shortDescription.isEmpty()) continue
+            css.sender.sendMessage(allTags.deserialize("<gold> - <hover:show_text:'Click to get help with /$featured'><click:run_command:/help $featured><white>/$featured - $shortDescription</click></hover>"))
+        }
     }
 
     @Command("help <CMD>")
