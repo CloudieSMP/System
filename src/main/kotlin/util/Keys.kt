@@ -10,4 +10,5 @@ object Keys {
     val ITEM_IS_UNPLACEABLE = NamespacedKey(plugin, "item.unplaceable")
     val GENERIC_RARITY = NamespacedKey(plugin, "item.rarity")
     val CRATE_TYPE = NamespacedKey(plugin, "crate.type")
+    val BOOSTER_TYPE = NamespacedKey(plugin, "booster.type")
 }

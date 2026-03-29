@@ -4,7 +4,7 @@ api-version: "1.21.11"
 authors: [Sebiann]
 website: https://sebiann.moe
 
-version: ${version}
+version: "${version}"
 main: System
 load: STARTUP
 
