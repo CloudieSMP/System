@@ -37,7 +37,6 @@ import util.ResourcePacker
 class System : JavaPlugin() {
     private lateinit var commandManager: PaperCommandManager<CommandSourceStack>
     private lateinit var annotationParser: AnnotationParser<CommandSourceStack>
-    private val playerJoinListener = PlayerJoin()
     lateinit var config: Config
         private set
 
@@ -126,7 +125,7 @@ class System : JavaPlugin() {
 
     private fun setupEvents() {
         server.pluginManager.registerEvents(ServerListEvent(), this)
-        server.pluginManager.registerEvents(playerJoinListener, this)
+        server.pluginManager.registerEvents(PlayerJoin(), this)
         server.pluginManager.registerEvents(PlayerQuit(), this)
         server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(PlayerInteractEntity(), this)
@@ -176,4 +175,3 @@ class System : JavaPlugin() {
 
 val plugin: System get() = JavaPlugin.getPlugin(System::class.java)
 val logger get() = plugin.logger
-//val config: Config get() = (plugin as System).config
