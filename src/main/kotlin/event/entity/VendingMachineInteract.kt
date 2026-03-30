@@ -1,5 +1,8 @@
 package event.entity
 
+import chat.Formatting.allTags
+import item.booster.BoosterPack
+import item.booster.BoosterType
 import item.crate.Crate
 import item.crate.CrateType
 import org.bukkit.Material
@@ -14,17 +17,40 @@ object VendingMachineInteract {
         val vendingMachine = event.rightClicked as? Interaction ?: return
         if (!vendingMachine.scoreboardTags.contains("vending_machine")) return
         val player = event.player
-        if (!player.areYouHoldingThisRemove(Material.DIAMOND)) return player.sendMessage("You need to be holding a diamond to interact with the vending machine!")
         val location = vendingMachine.location.clone().add(vendingMachine.location.direction.setY(0).multiply(1)).add(0.0, 1.25, 0.0)
 
-        player.playSound(vendingMachine.location, "minecraft:block.note_block.chime", 1f, 1f)
-        player.world.spawn(location, Item::class.java).apply {
-            itemStack = Crate.create(CrateType.PLUSHIE)
-            velocity = location.direction.multiply(0.1)
-            pickupDelay = 2.secondsToTicks()
-            isInvulnerable = true
-            setWillAge(false)
-            isGlowing = true
+        if (player.areYouHoldingThisRemove(Material.COAL)) {
+            player.playSound(vendingMachine.location, "minecraft:block.note_block.chime", 1f, 1f)
+            player.world.spawn(location, Item::class.java).apply {
+                itemStack = BoosterPack.create(BoosterType.STANDARD)
+                velocity = location.direction.multiply(0.1)
+                pickupDelay = 2.secondsToTicks()
+                isInvulnerable = true
+                setWillAge(false)
+                isGlowing = true
+            }
+        } else if (player.areYouHoldingThisRemove(Material.IRON_INGOT)) {
+            player.playSound(vendingMachine.location, "minecraft:block.note_block.chime", 1f, 1f)
+            player.world.spawn(location, Item::class.java).apply {
+                itemStack = BoosterPack.create(BoosterType.EPIC)
+                velocity = location.direction.multiply(0.1)
+                pickupDelay = 2.secondsToTicks()
+                isInvulnerable = true
+                setWillAge(false)
+                isGlowing = true
+            }
+        } else if (player.areYouHoldingThisRemove(Material.DIAMOND)) {
+            player.playSound(vendingMachine.location, "minecraft:block.note_block.chime", 1f, 1f)
+            player.world.spawn(location, Item::class.java).apply {
+                itemStack = BoosterPack.create(BoosterType.SUPER)
+                velocity = location.direction.multiply(0.1)
+                pickupDelay = 2.secondsToTicks()
+                isInvulnerable = true
+                setWillAge(false)
+                isGlowing = true
+            }
+        } else {
+            player.sendMessage(allTags.deserialize("<red>You need to be holding a valid currency item to use the vending machine!"))
         }
     }
 }

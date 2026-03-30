@@ -31,4 +31,4 @@ data class DiscordConfig(
 data class Link(val component: String, val uri: URI, val order: Int)
 
 @ConfigSerializable
-data class ResourcePack(val uri: URI, val hash: String, val priority: Int)
+data class ResourcePack(val uri: URI, val priority: Int)

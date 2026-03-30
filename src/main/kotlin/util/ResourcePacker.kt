@@ -14,9 +14,7 @@ import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
 import org.bukkit.entity.Player
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
-import java.io.File
 import java.net.URI
 import java.security.MessageDigest
 import java.util.*
@@ -26,7 +24,6 @@ object ResourcePacker {
         val uri: URI,
         val priority: Int,
         val hash: String,
-        val hashSource: String,
         val releaseLabel: String?
     )
 
@@ -75,7 +72,7 @@ object ResourcePacker {
         player.clearResourcePacks()
     }
 
-    fun refreshFromUrl(persistHashes: Boolean = false): Boolean = runBlocking {
+    fun refreshFromUrl(): Boolean = runBlocking {
         val configured = plugin.config.resourcePacks.sortedByDescending { it.priority }
         if (configured.isEmpty()) {
             cachedPacks = emptyList()
@@ -91,30 +88,16 @@ object ResourcePacker {
 
         try {
             configured.forEach { pack ->
-                val configuredHash = pack.hash.trim()
-                val releaseLabel: String?
-                val resolvedHash = if (configuredHash.isNotEmpty()) {
-                    releaseLabel = deriveGitHubReleaseFromUri(pack.uri)
-                    configuredHash
-                } else {
-                    val downloaded = fetch(pack.uri.toString())
-                    releaseLabel = downloaded.releaseLabel
-                    hash(downloaded.bytes)
-                }
+                val downloaded = fetch(pack.uri.toString())
+                val resolvedHash = hash(downloaded.bytes)
 
                 nextPacks += ResourcePackInfo.resourcePackInfo(UUID.randomUUID(), pack.uri, resolvedHash)
                 nextMeta += CachedPackMeta(
                     uri = pack.uri,
                     priority = pack.priority,
                     hash = resolvedHash,
-                    hashSource = if (configuredHash.isNotEmpty()) "config" else "download",
-                    releaseLabel = releaseLabel
+                    releaseLabel = downloaded.releaseLabel
                 )
-            }
-
-            if (persistHashes) {
-                val updated = persistHashesToConfig(nextMeta)
-                logger.info("Persisted $updated resource-pack hash values to config.yml.")
             }
 
             cachedPacks = nextPacks
@@ -177,38 +160,6 @@ object ResourcePacker {
         return segments[downloadIndex + 1]
     }
 
-    private fun persistHashesToConfig(meta: List<CachedPackMeta>): Int {
-        val configFile = File(plugin.dataFolder, "config.yml")
-        val loader = YamlConfigurationLoader.builder()
-            .file(configFile)
-            .build()
-
-        val node = loader.load()
-        val packsNode = node.node("resource-packs")
-        val children = packsNode.childrenList()
-
-        var updated = 0
-        children.forEach { packNode ->
-            val uriText = packNode.node("uri").string?.trim().orEmpty()
-            val priority = packNode.node("priority").getInt(0)
-
-            val match = meta.firstOrNull {
-                it.uri.toString() == uriText && it.priority == priority
-            } ?: meta.firstOrNull {
-                it.uri.toString() == uriText
-            }
-
-            if (match != null) {
-                packNode.node("hash").set(match.hash)
-                updated += 1
-            }
-        }
-
-        loader.save(node)
-        plugin.reloadConfig()
-
-        return updated
-    }
 
     private fun hash(data: ByteArray): String {
         val messageDigest = MessageDigest.getInstance("SHA-1")

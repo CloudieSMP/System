@@ -46,7 +46,7 @@ class Pack {
         status.cached.forEachIndexed { index, pack ->
             css.sender.sendMessage(
                 Formatting.allTags.deserialize(
-                    "<aqua>#${index + 1}</aqua> <gray>prio</gray>=<white>${pack.priority}</white> <gray>source</gray>=<white>${pack.hashSource}</white>"
+                    "<aqua>#${index + 1}</aqua> <gray>prio</gray>=<white>${pack.priority}</white>"
                 )
             )
             css.sender.sendMessage(Formatting.allTags.deserialize("<gray>   hash:</gray> <white>${pack.hash}</white>"))
@@ -60,25 +60,13 @@ class Pack {
     @Command("pack refresh")
     @Confirmation
     fun packRefresh(css: CommandSourceStack) {
-        refreshAndApply(css, persistHashes = false)
+        refreshAndApply(css)
     }
 
     @Command("pack refresh <player>")
     @Confirmation
     fun packRefresh(css: CommandSourceStack, player: Player) {
-        refreshAndApply(css, player = player, persistHashes = false)
-    }
-
-    @Command("pack refresh persist")
-    @Confirmation
-    fun packRefreshPersist(css: CommandSourceStack) {
-        refreshAndApply(css, persistHashes = true)
-    }
-
-    @Command("pack refresh persist <player>")
-    @Confirmation
-    fun packRefreshPersist(css: CommandSourceStack, player: Player) {
-        refreshAndApply(css, player = player, persistHashes = true)
+        refreshAndApply(css, player = player)
     }
 
     @Command("pack push")
@@ -154,16 +142,15 @@ class Pack {
         }
     }
 
-    private fun refreshAndApply(css: CommandSourceStack, player: Player? = null, persistHashes: Boolean) {
-        if (!ResourcePacker.refreshFromUrl(persistHashes)) {
+    private fun refreshAndApply(css: CommandSourceStack, player: Player? = null) {
+        if (!ResourcePacker.refreshFromUrl()) {
             css.sender.sendMessage(Component.text("Failed to refresh resource pack from URL. Check console logs.", NamedTextColor.RED))
             return
         }
 
-        val persistSuffix = if (persistHashes) " and persisted hashes to config" else ""
         if (player == null) {
             ChatUtility.broadcastDev(
-                "<yellow>${css.sender.name} <green>refreshed<reset> the <notifcolor>resource packs<reset>$persistSuffix for all online users.",
+                "<yellow>${css.sender.name} <green>refreshed<reset> the <notifcolor>resource packs<reset> for all online users.",
                 false
             )
             val online = Bukkit.getOnlinePlayers()
@@ -173,7 +160,7 @@ class Pack {
         }
 
         ChatUtility.broadcastDev(
-            "<yellow>${css.sender.name} <green>refreshed<reset> the <notifcolor>resource packs<reset>$persistSuffix for ${player.name}.",
+            "<yellow>${css.sender.name} <green>refreshed<reset> the <notifcolor>resource packs<reset> for ${player.name}.",
             false
         )
         ResourcePacker.removePackPlayer(player)

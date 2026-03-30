@@ -3,7 +3,6 @@ package command
 import chat.Formatting.allTags
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import item.booster.BoosterPack
-import item.booster.BoosterPackItem
 import item.booster.BoosterType
 import item.booster.Cards
 import item.booster.CardCatalog
@@ -46,15 +45,6 @@ class Debug {
 
         player.inventory.addItem(BoosterPack.create(type))
         player.sendMessage(allTags.deserialize("<cloudiecolor>Given a Booster Pack!"))
-    }
-
-    @Command("debug booster item <type>")
-    @Permission("cloudie.cmd.debug")
-    fun debugBoosterItem(css: CommandSourceStack, @Argument("type") boosterItem: BoosterPackItem) {
-        val player = css.requirePlayer() ?: return
-
-        player.inventory.addItem(boosterItem.createItemStack())
-        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a Booster pack item!"))
     }
 
     @Command("debug pull <type>")
