@@ -1,27 +1,34 @@
 package util.ui
 
+import chat.Formatting
+import com.noxcrew.interfaces.InterfacesConstants
+import com.noxcrew.interfaces.drawable.Drawable
+import com.noxcrew.interfaces.element.StaticElement
+import com.noxcrew.interfaces.interfaces.buildChestInterface
 import item.crate.CrateItem
 import item.crate.CrateType
-import org.bukkit.Bukkit
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryHolder
+import kotlinx.coroutines.launch
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import plugin
-import kotlin.math.roundToInt
-import kotlin.random.Random
 import util.Sounds.GAMBLING_WHEEL_STOP
 import util.Sounds.GAMBLING_WHEEL_TICK
-import chat.Formatting
+import kotlin.math.roundToInt
+import kotlin.random.Random
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
-private class GamblingWindowHolder(val crateType: CrateType) : InventoryHolder {
-    var backingInventory: Inventory? = null
+private class GamblingWindowSession(
+    val crateType: CrateType,
+    val inventory: Inventory,
+) {
     var spinTask: BukkitRunnable? = null
     var wheelOffset: Int = 0
     var isSpinning: Boolean = false
@@ -31,10 +38,6 @@ private class GamblingWindowHolder(val crateType: CrateType) : InventoryHolder {
     var winningItem: CrateItem? = null
     var rewardGranted: Boolean = false
     var spinConsumed: Boolean = false
-
-    override fun getInventory(): Inventory {
-        return requireNotNull(backingInventory) { "Gambling window inventory has not been initialized." }
-    }
 }
 
 object GamblingWindow : Listener {
@@ -44,50 +47,77 @@ object GamblingWindow : Listener {
     private val idleWheelItem = ItemStack(Material.WHITE_WOOL)
     private val winningPaneSlots = listOf(4, 22)
     private val winningFillerPane = ItemStack(Material.LIME_STAINED_GLASS_PANE)
+    private val sessions = ConcurrentHashMap<UUID, GamblingWindowSession>()
 
     fun open(player: Player, crateType: CrateType) {
-        val holder = GamblingWindowHolder(crateType)
-        val title = crateType.displayName
-        val inv = Bukkit.createInventory(holder, 27, title)
-        holder.backingInventory = inv
+        sessions.remove(player.uniqueId)?.let { existing ->
+            if (existing.isSpinning) {
+                awardPendingReward(existing, player, "closed early")
+            }
+            stopSpin(existing)
+        }
 
-        renderInitialLayout(inv)
-
-        player.openInventory(inv)
-
-        // Start automatically on next tick so the open inventory is guaranteed to be active.
-        object : BukkitRunnable() {
-            override fun run() {
-                if (player.isOnline && player.openInventory.topInventory == inv) {
-                    startSpin(holder, player)
+        val iface = buildChestInterface {
+            rows = 3
+            titleSupplier = { crateType.displayName }
+            withTransform { pane, _ ->
+                for (slot in 0 until 27) {
+                    val item = if (slot in wheelSlots) {
+                        idleWheelItem
+                    } else if (slot in winningPaneSlots) {
+                        winningFillerPane
+                    } else {
+                        fillerPane
+                    }
+                    pane[slot / 9, slot % 9] = StaticElement(Drawable.drawable(item))
                 }
             }
-        }.runTask(plugin)
+        }
+
+        InterfacesConstants.SCOPE.launch {
+            iface.open(player)
+            val topInventory = player.openInventory.topInventory
+            val session = GamblingWindowSession(crateType, topInventory)
+            sessions[player.uniqueId] = session
+
+            // Start automatically on next tick so the open inventory is guaranteed to be active.
+            object : BukkitRunnable() {
+                override fun run() {
+                    if (player.isOnline && player.openInventory.topInventory == session.inventory) {
+                        startSpin(session, player)
+                    }
+                }
+            }.runTask(plugin)
+        }
     }
 
     @EventHandler
     fun onClick(e: InventoryClickEvent) {
-        val topInventory = e.view.topInventory
-        if (topInventory.holder !is GamblingWindowHolder) return
+        val player = e.whoClicked as? Player ?: return
+        val session = sessions[player.uniqueId] ?: return
+        if (e.view.topInventory != session.inventory) return
         e.isCancelled = true
     }
 
     @EventHandler
     fun onClose(e: InventoryCloseEvent) {
-        val holder = e.inventory.holder as? GamblingWindowHolder ?: return
         val player = e.player as? Player
+        if (player == null) return
+        val session = sessions[player.uniqueId] ?: return
+        if (e.inventory != session.inventory) return
 
-        if (holder.isSpinning && player != null) {
-            awardPendingReward(holder, player, "closed early")
+        if (session.isSpinning) {
+            awardPendingReward(session, player, "closed early")
         }
 
-        stopSpin(holder)
+        stopSpin(session)
+        sessions.remove(player.uniqueId)
     }
 
-    private fun startSpin(holder: GamblingWindowHolder, player: Player) {
-        if (holder.isSpinning || holder.spinConsumed) return
+    private fun startSpin(session: GamblingWindowSession, player: Player) {
+        if (session.isSpinning || session.spinConsumed) return
 
-        val pool = holder.crateType.lootPool.possibleItems
+        val pool = session.crateType.lootPool.possibleItems
         if (pool.isEmpty()) {
             player.sendMessage(Formatting.allTags.deserialize("<red>This crate has no loot configured yet."))
             return
@@ -97,72 +127,71 @@ object GamblingWindow : Listener {
         val baseSteps = 40
         val targetIndex = pool.indexOf(winningCrateItem)
         val targetOffset = mod(targetIndex - 2, pool.size)
-        val desiredRemainder = mod(targetOffset - holder.wheelOffset, pool.size)
+        val desiredRemainder = mod(targetOffset - session.wheelOffset, pool.size)
         val alignmentDelta = mod(desiredRemainder - (baseSteps % pool.size), pool.size)
         val bonusLoops = Random.nextInt(0, 3) * pool.size
 
-        holder.isSpinning = true
-        holder.spinTargetSteps = baseSteps + alignmentDelta + bonusLoops
-        holder.winningItem = winningCrateItem
-        holder.rewardGranted = false
-        holder.spinConsumed = true
+        session.isSpinning = true
+        session.spinTargetSteps = baseSteps + alignmentDelta + bonusLoops
+        session.winningItem = winningCrateItem
+        session.rewardGranted = false
+        session.spinConsumed = true
         val minDelayTicks = 1
         val maxDelayTicks = 6
-        holder.spinStepsDone = 0
-        holder.spinTicksUntilNextStep = 0
+        session.spinStepsDone = 0
+        session.spinTicksUntilNextStep = 0
 
         val task = object : BukkitRunnable() {
             override fun run() {
-                val inventory = holder.backingInventory
-                if (inventory == null || !player.isOnline || player.openInventory.topInventory != inventory) {
-                    stopSpin(holder)
+                if (!player.isOnline || player.openInventory.topInventory != session.inventory) {
+                    stopSpin(session)
                     cancel()
                     return
                 }
 
-                if (holder.spinTicksUntilNextStep > 0) {
-                    holder.spinTicksUntilNextStep--
+                if (session.spinTicksUntilNextStep > 0) {
+                    session.spinTicksUntilNextStep--
                     return
                 }
 
-                holder.wheelOffset = (holder.wheelOffset + 1) % pool.size
-                renderWheel(inventory, holder, holder.wheelOffset)
+                session.wheelOffset = (session.wheelOffset + 1) % pool.size
+                renderWheel(session.inventory, session, session.wheelOffset)
                 player.playSound(GAMBLING_WHEEL_TICK)
-                holder.spinStepsDone++
+                session.spinStepsDone++
 
-                val progress = holder.spinStepsDone.toDouble() / holder.spinTargetSteps.toDouble()
+                val progress = session.spinStepsDone.toDouble() / session.spinTargetSteps.toDouble()
                 val easedProgress = progress * progress
-                holder.spinTicksUntilNextStep = (minDelayTicks + (maxDelayTicks - minDelayTicks) * easedProgress)
+                session.spinTicksUntilNextStep = (minDelayTicks + (maxDelayTicks - minDelayTicks) * easedProgress)
                     .roundToInt()
                     .coerceAtLeast(minDelayTicks)
 
-                if (holder.spinStepsDone >= holder.spinTargetSteps) {
+                if (session.spinStepsDone >= session.spinTargetSteps) {
                     for (slot in wheelSlots) {
-                        if (slot != winningWheelSlot) inventory.setItem(slot, idleWheelItem)
+                        if (slot != winningWheelSlot) session.inventory.setItem(slot, idleWheelItem)
                     }
-                    stopSpin(holder)
+                    stopSpin(session)
                     player.playSound(GAMBLING_WHEEL_STOP)
-                    awardPendingReward(holder, player, "stopped")
+                    awardPendingReward(session, player, "stopped")
                     cancel()
                 }
             }
         }
 
-        holder.spinTask = task
+        session.spinTask = task
         task.runTaskTimer(plugin, 0L, 1L)
     }
 
-    private fun stopSpin(holder: GamblingWindowHolder) {
-        holder.spinTask?.cancel()
-        holder.spinTask = null
-        holder.isSpinning = false
-        holder.spinStepsDone = 0
-        holder.spinTicksUntilNextStep = 0
-        holder.spinTargetSteps = 0
+    private fun stopSpin(session: GamblingWindowSession) {
+        session.spinTask?.cancel()
+        session.spinTask = null
+        session.isSpinning = false
+        session.spinStepsDone = 0
+        session.spinTicksUntilNextStep = 0
+        session.spinTargetSteps = 0
     }
 
-    private fun renderWheel(inventory: Inventory, holder: GamblingWindowHolder, offset: Int) {
-        val pool = holder.crateType.lootPool.possibleItems
+    private fun renderWheel(inventory: Inventory, session: GamblingWindowSession, offset: Int) {
+        val pool = session.crateType.lootPool.possibleItems
         if (pool.isEmpty()) return
 
         for ((index, slot) in wheelSlots.withIndex()) {
@@ -193,17 +222,17 @@ object GamblingWindow : Listener {
         return if (remainder < 0) remainder + divisor else remainder
     }
 
-    private fun awardPendingReward(holder: GamblingWindowHolder, player: Player, reason: String) {
-        if (holder.rewardGranted) return
+    private fun awardPendingReward(session: GamblingWindowSession, player: Player, reason: String) {
+        if (session.rewardGranted) return
 
-        val winner = holder.winningItem
+        val winner = session.winningItem
         if (winner == null) {
             player.sendMessage(
                 Formatting.allTags.deserialize("<red>No reward could be resolved for the ")
-                    .append(holder.crateType.displayName)
+                    .append(session.crateType.displayName)
                     .append(Formatting.allTags.deserialize("<red>."))
             )
-            holder.rewardGranted = true
+            session.rewardGranted = true
             return
         }
 
@@ -218,7 +247,7 @@ object GamblingWindow : Listener {
                 Formatting.allTags.deserialize("<yellow>You closed the wheel early — you still won a ")
                     .append(rewardStack.displayName())
                     .append(Formatting.allTags.deserialize("<yellow> from the "))
-                    .append(holder.crateType.displayName)
+                    .append(session.crateType.displayName)
                     .append(Formatting.allTags.deserialize("<yellow>."))
             )
         } else {
@@ -226,16 +255,10 @@ object GamblingWindow : Listener {
                 Formatting.allTags.deserialize("<green>You won a ")
                     .append(rewardStack.displayName())
                     .append(Formatting.allTags.deserialize("<green> from the "))
-                    .append(holder.crateType.displayName)
+                    .append(session.crateType.displayName)
                     .append(Formatting.allTags.deserialize("<green>!"))
             )
         }
-        holder.rewardGranted = true
-    }
-
-    private fun renderInitialLayout(inventory: Inventory) {
-        for (slot in 0 until inventory.size) {
-            inventory.setItem(slot, if (slot in wheelSlots) idleWheelItem else if (slot in winningPaneSlots) winningFillerPane else fillerPane)
-        }
+        session.rewardGranted = true
     }
 }

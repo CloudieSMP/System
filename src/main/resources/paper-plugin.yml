@@ -71,6 +71,7 @@ permissions:
       cloudie.cmd.renameitem: true
       cloudie.cmd.resetitemname: true
       cloudie.cmd.crates: true
+      cloudie.cmd.boosters: true
       cloudie.cmd.home: true
       cloudie.cmd.spawn: true
       cloudie.cmd.streamermode: true
@@ -96,6 +97,8 @@ permissions:
     description: Allows the player to reset item names.
   cloudie.cmd.crates:
     description: Allows the player to open the crates browser.
+  cloudie.cmd.boosters:
+    description: Allows the player to open the booster packs browser.
   cloudie.cmd.home:
     description: Allows the player to manage personal homes.
   cloudie.cmd.spawn:

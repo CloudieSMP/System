@@ -1,10 +1,12 @@
 import chat.Formatting.allTags
 import chat.VisualChat
+import com.noxcrew.interfaces.InterfacesListeners
 import event.ServerListEvent
 import event.block.CauldronListener
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import command.LiveUtil
+import library.CardPullCounterStorage
 import library.HomeStorage
 import library.MailStorage
 import org.bukkit.Bukkit
@@ -16,7 +18,6 @@ import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import util.ui.GamblingWindow
-import util.ui.CrateBrowserWindow
 import library.VanishHelper
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -42,7 +43,9 @@ class System : JavaPlugin() {
 
     override fun onEnable() {
         this.logger.info("Starting the Cloudie System plugin!")
+        InterfacesListeners.install(this)
         reloadConfig()
+        CardPullCounterStorage.loadSync()
         if (ResourcePacker.refreshFromUrl()) {
             logger.info("Resource pack cache populated on startup.")
         } else {
@@ -58,6 +61,7 @@ class System : JavaPlugin() {
         LiveUtil.shutdown()
         HomeStorage.flushAllSync()
         MailStorage.flushAllSync()
+        CardPullCounterStorage.flushAllSync()
         VanishHelper.resetAllVisibility()
         VisualChat.clearChatEntities()
     }
@@ -128,8 +132,8 @@ class System : JavaPlugin() {
         server.pluginManager.registerEvents(PlayerInteractEntity(), this)
         server.pluginManager.registerEvents(PlayerItemConsume(), this)
         server.pluginManager.registerEvents(CauldronListener(), this)
-        server.pluginManager.registerEvents(CrateBrowserWindow, this)
         server.pluginManager.registerEvents(GamblingWindow, this)
+        server.pluginManager.registerEvents(BinderInteract(), this)
     }
 
     private fun applyConfig(config: Config) {

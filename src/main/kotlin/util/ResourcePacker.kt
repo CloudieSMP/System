@@ -7,13 +7,16 @@ import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.HttpMethod
 
 import kotlinx.coroutines.runBlocking
 
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
 import org.bukkit.entity.Player
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 
+import java.io.File
 import java.net.URI
 import java.security.MessageDigest
 import java.util.*
@@ -23,7 +26,13 @@ object ResourcePacker {
         val uri: URI,
         val priority: Int,
         val hash: String,
-        val hashSource: String
+        val hashSource: String,
+        val releaseLabel: String?
+    )
+
+    private class DownloadedPack(
+        val bytes: ByteArray,
+        val releaseLabel: String?
     )
 
     data class CacheStatus(
@@ -35,6 +44,7 @@ object ResourcePacker {
     )
 
     private val client = HttpClient(CIO)
+    private val noRedirectClient = HttpClient(CIO) { followRedirects = false }
 
     @Volatile
     private var cachedPacks: List<ResourcePackInfo> = emptyList()
@@ -65,7 +75,7 @@ object ResourcePacker {
         player.clearResourcePacks()
     }
 
-    fun refreshFromUrl(): Boolean = runBlocking {
+    fun refreshFromUrl(persistHashes: Boolean = false): Boolean = runBlocking {
         val configured = plugin.config.resourcePacks.sortedByDescending { it.priority }
         if (configured.isEmpty()) {
             cachedPacks = emptyList()
@@ -82,10 +92,14 @@ object ResourcePacker {
         try {
             configured.forEach { pack ->
                 val configuredHash = pack.hash.trim()
+                val releaseLabel: String?
                 val resolvedHash = if (configuredHash.isNotEmpty()) {
+                    releaseLabel = deriveGitHubReleaseFromUri(pack.uri)
                     configuredHash
                 } else {
-                    hash(fetch(pack.uri.toString()))
+                    val downloaded = fetch(pack.uri.toString())
+                    releaseLabel = downloaded.releaseLabel
+                    hash(downloaded.bytes)
                 }
 
                 nextPacks += ResourcePackInfo.resourcePackInfo(UUID.randomUUID(), pack.uri, resolvedHash)
@@ -93,8 +107,14 @@ object ResourcePacker {
                     uri = pack.uri,
                     priority = pack.priority,
                     hash = resolvedHash,
-                    hashSource = if (configuredHash.isNotEmpty()) "config" else "download"
+                    hashSource = if (configuredHash.isNotEmpty()) "config" else "download",
+                    releaseLabel = releaseLabel
                 )
+            }
+
+            if (persistHashes) {
+                val updated = persistHashesToConfig(nextMeta)
+                logger.info("Persisted $updated resource-pack hash values to config.yml.")
             }
 
             cachedPacks = nextPacks
@@ -119,9 +139,75 @@ object ResourcePacker {
         )
     }
 
-    private suspend fun fetch(url: String): ByteArray {
+    private suspend fun fetch(url: String): DownloadedPack {
         val response: HttpResponse = client.get(url)
-        return response.readBytes()
+        val configuredUri = URI(url)
+        val effectiveUri = URI(response.request.url.toString())
+        val releaseLabel = resolveGitHubLatestRelease(url)
+            ?: deriveGitHubReleaseFromUri(configuredUri)
+            ?: deriveGitHubReleaseFromUri(effectiveUri)
+
+        return DownloadedPack(
+            bytes = response.readBytes(),
+            releaseLabel = releaseLabel
+        )
+    }
+
+    private suspend fun resolveGitHubLatestRelease(url: String): String? {
+        val uri = runCatching { URI(url) }.getOrNull() ?: return null
+        val host = uri.host?.lowercase() ?: return null
+        if (host != "github.com" && host != "www.github.com") return null
+        if (!uri.path.contains("/releases/latest/download/")) return null
+
+        val response = noRedirectClient.request(url) {
+            method = HttpMethod.Get
+        }
+        val location = response.headers["Location"] ?: return null
+        return runCatching { deriveGitHubReleaseFromUri(URI(location)) }.getOrNull()
+    }
+
+    private fun deriveGitHubReleaseFromUri(uri: URI): String? {
+        val host = uri.host?.lowercase() ?: return null
+        if (host != "github.com" && host != "www.github.com") return null
+
+        val segments = uri.path.split('/').filter { it.isNotBlank() }
+        val downloadIndex = segments.indexOf("download")
+        if (downloadIndex < 0 || downloadIndex + 1 >= segments.size) return null
+        if (downloadIndex == 0 || segments[downloadIndex - 1] != "releases") return null
+        return segments[downloadIndex + 1]
+    }
+
+    private fun persistHashesToConfig(meta: List<CachedPackMeta>): Int {
+        val configFile = File(plugin.dataFolder, "config.yml")
+        val loader = YamlConfigurationLoader.builder()
+            .file(configFile)
+            .build()
+
+        val node = loader.load()
+        val packsNode = node.node("resource-packs")
+        val children = packsNode.childrenList()
+
+        var updated = 0
+        children.forEach { packNode ->
+            val uriText = packNode.node("uri").string?.trim().orEmpty()
+            val priority = packNode.node("priority").getInt(0)
+
+            val match = meta.firstOrNull {
+                it.uri.toString() == uriText && it.priority == priority
+            } ?: meta.firstOrNull {
+                it.uri.toString() == uriText
+            }
+
+            if (match != null) {
+                packNode.node("hash").set(match.hash)
+                updated += 1
+            }
+        }
+
+        loader.save(node)
+        plugin.reloadConfig()
+
+        return updated
     }
 
     private fun hash(data: ByteArray): String {

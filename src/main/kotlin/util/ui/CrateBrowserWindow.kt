@@ -3,35 +3,14 @@ package util.ui
 import chat.Formatting.allTags
 import item.crate.Crate
 import item.crate.CrateType
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
+import java.util.Locale
 
-private class CrateSelectorHolder : InventoryHolder {
-    var backingInventory: Inventory? = null
-    val slots = mutableMapOf<Int, CrateType>()
-
-    override fun getInventory(): Inventory {
-        return requireNotNull(backingInventory) { "Crate selector inventory has not been initialized." }
-    }
-}
-
-private class CrateLootHolder : InventoryHolder {
-    var backingInventory: Inventory? = null
-
-    override fun getInventory(): Inventory {
-        return requireNotNull(backingInventory) { "Crate loot inventory has not been initialized." }
-    }
-}
-
-object CrateBrowserWindow : Listener {
+object CrateBrowserWindow {
     private val fillerPane = ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)
+    private val selectorTitle = allTags.deserialize("<gradient:#DF6F69:#823BC6><bold>Crates</bold></gradient>")
     private val backButton = ItemStack(Material.ARROW).apply {
         editMeta { meta ->
             meta.displayName(allTags.deserialize("<yellow><bold>Back to Crates"))
@@ -39,81 +18,47 @@ object CrateBrowserWindow : Listener {
     }
 
     fun openSelector(player: Player) {
-        val holder = CrateSelectorHolder()
         val crateTypes = CrateType.entries
-        val size = ((crateTypes.size + 8) / 9).coerceAtLeast(1) * 9
-        val inventory = Bukkit.createInventory(holder, size, allTags.deserialize("<gradient:#DF6F69:#823BC6><bold>Crates</bold></gradient>"))
-        holder.backingInventory = inventory
 
-        for (slot in 0 until size) {
-            inventory.setItem(slot, fillerPane)
-        }
-
-        crateTypes.forEachIndexed { index, crateType ->
-            holder.slots[index] = crateType
-            inventory.setItem(index, Crate.create(crateType).clone())
-        }
-
-        player.openInventory(inventory)
+        CollectionBrowserWindow.openSelector(
+            player = player,
+            title = selectorTitle,
+            entries = crateTypes,
+            fillerPane = fillerPane,
+            itemForEntry = { crateType -> Crate.create(crateType).clone() },
+            onEntryClick = { clicker, crateType -> openLootPreview(clicker, crateType) },
+        )
     }
 
     private fun openLootPreview(player: Player, crateType: CrateType) {
-        val holder = CrateLootHolder()
         val loot = crateType.lootPool.possibleItems
-        val size = ((loot.size + 1 + 8) / 9).coerceAtLeast(1) * 9
-        val inventory = Bukkit.createInventory(holder, size, crateType.displayName)
-        val backSlot = size - 1
-        holder.backingInventory = inventory
-
-        for (slot in 0 until size) {
-            inventory.setItem(slot, fillerPane)
-        }
-
         val totalRollWeight = loot.sumOf { it.rollWeight.coerceAtLeast(0) }
 
-        loot.forEachIndexed { index, crateItem ->
-            if (index == backSlot) return@forEachIndexed
-            val itemRollWeight = crateItem.rollWeight.coerceAtLeast(0)
-            val actualChance = if (totalRollWeight > 0)
-                itemRollWeight.toDouble() / totalRollWeight * 100.0
-            else 0.0
-            val chancePercentText = "%.1f".format(actualChance)
-
-            val preview = crateItem.createItemStack()
-            preview.editMeta { meta ->
-                val updatedLore = (meta.lore() ?: emptyList()) +
-                    allTags.deserialize("<!i><gray>Chance: <white>$chancePercentText%")
-                meta.lore(updatedLore)
-            }
-            inventory.setItem(index, preview)
-        }
-
-        inventory.setItem(backSlot, backButton.clone())
-
-        player.openInventory(inventory)
-    }
-
-    @EventHandler
-    fun onClick(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        val topInventory = event.view.topInventory
-
-        when (val holder = topInventory.holder) {
-            is CrateSelectorHolder -> {
-                event.isCancelled = true
-                if (event.clickedInventory != topInventory) return
-                val crateType = holder.slots[event.slot] ?: return
-                openLootPreview(player, crateType)
-            }
-
-            is CrateLootHolder -> {
-                event.isCancelled = true
-                if (event.clickedInventory != topInventory) return
-                if (event.slot == topInventory.size - 1) {
-                    openSelector(player)
+        CollectionBrowserWindow.openPreview(
+            player = player,
+            title = crateType.displayName,
+            entries = loot,
+            fillerPane = fillerPane,
+            backButton = backButton,
+            itemForEntry = { crateItem ->
+                val itemRollWeight = crateItem.rollWeight.coerceAtLeast(0)
+                val actualChance = if (totalRollWeight > 0) {
+                    itemRollWeight.toDouble() / totalRollWeight * 100.0
+                } else {
+                    0.0
                 }
-            }
-        }
+                val chancePercentText = String.format(Locale.US, "%.1f", actualChance)
+
+                crateItem.createItemStack().apply {
+                    editMeta { meta ->
+                        val updatedLore = (meta.lore() ?: emptyList()) +
+                            allTags.deserialize("<!i><gray>Chance: <white>$chancePercentText%")
+                        meta.lore(updatedLore)
+                    }
+                }
+            },
+            onBackClick = { clicker -> openSelector(clicker) },
+        )
     }
 }
 

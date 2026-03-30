@@ -3,11 +3,11 @@ package item
 import logger
 import kotlin.random.Random
 
-enum class SubRarity(val weight : Double, val subRarityGlyph : String) {
-    NONE(99.95,""),
-    SHINY(0.025, "\uE151"),
-    SHADOW(0.015, "\uE152"),
-    OBFUSCATED(0.01, "\uE153");
+enum class SubRarity(val weight: Double, val subRarityGlyph: String, val modelDataOffset: Int) {
+    NONE      (99.95,  "",        0), // plain card — uses the card's base model data
+    SHINY     (0.025, "\uE151",  1), // base + 1
+    SHADOW    (0.015, "\uE152",  2), // base + 2
+    OBFUSCATED(0.01,  "\uE153",  3); // base + 3
 
     companion object {
         fun getRandomSubRarity(): SubRarity {

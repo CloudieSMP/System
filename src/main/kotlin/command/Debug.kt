@@ -1,16 +1,20 @@
 package command
 
-import chat.Formatting
+import chat.Formatting.allTags
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import item.booster.BoosterPack
 import item.booster.BoosterPackItem
 import item.booster.BoosterType
+import item.booster.Cards
+import item.booster.CardCatalog
+import item.binder.BinderItem
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.annotations.processing.CommandContainer
 import item.crate.Crate
 import item.crate.CrateItem
 import item.crate.CrateType
+import org.bukkit.entity.EntityType
 import org.incendo.cloud.annotations.Argument
 import util.requirePlayer
 
@@ -23,16 +27,16 @@ class Debug {
         val player = css.requirePlayer() ?: return
 
         player.inventory.addItem(Crate.create(type))
-        player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a crate!"))
+        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a crate!"))
     }
 
     @Command("debug crate item <type>")
     @Permission("cloudie.cmd.debug")
-    fun debugCrateItem(css: CommandSourceStack, @Argument("type") item: CrateItem) {
+    fun debugCrateItem(css: CommandSourceStack, @Argument("type") crateItem: CrateItem) {
         val player = css.requirePlayer() ?: return
 
-        player.inventory.addItem(item.createItemStack())
-        player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a crate item!"))
+        player.inventory.addItem(crateItem.createItemStack())
+        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a crate item!"))
     }
 
     @Command("debug booster <type>")
@@ -41,15 +45,66 @@ class Debug {
         val player = css.requirePlayer() ?: return
 
         player.inventory.addItem(BoosterPack.create(type))
-        player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a Booster Pack!"))
+        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a Booster Pack!"))
     }
 
     @Command("debug booster item <type>")
     @Permission("cloudie.cmd.debug")
-    fun debugBoosterItem(css: CommandSourceStack, @Argument("type") item: BoosterPackItem) {
+    fun debugBoosterItem(css: CommandSourceStack, @Argument("type") boosterItem: BoosterPackItem) {
         val player = css.requirePlayer() ?: return
 
-        player.inventory.addItem(item.createItemStack())
-        player.sendMessage(Formatting.allTags.deserialize("<cloudiecolor>Given a Booster pack item!"))
+        player.inventory.addItem(boosterItem.createItemStack())
+        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a Booster pack item!"))
     }
+
+    @Command("debug pull <type>")
+    @Permission("cloudie.cmd.debug")
+    fun debugPull(css: CommandSourceStack, @Argument("type") type: BoosterType) {
+        val player = css.requirePlayer() ?: return
+
+        val pull = Cards.openBooster(player, type)
+        if (pull == null) {
+            player.sendMessage(allTags.deserialize("<red>No eligible cards were found for this booster."))
+        }
+    }
+
+    @Command("debug binder")
+    @Permission("cloudie.cmd.debug")
+    fun debugBinder(css: CommandSourceStack) {
+        val player = css.requirePlayer() ?: return
+        player.inventory.addItem(BinderItem.create())
+        player.sendMessage(allTags.deserialize("<cloudiecolor>Given a Card Binder!"))
+    }
+
+    @Command("debug card <booster> <mob>")
+    @Permission("cloudie.cmd.debug")
+    fun debugCard(
+        css: CommandSourceStack,
+        @Argument("booster") boosterType: BoosterType,
+        @Argument("mob") mobType: EntityType,
+    ) {
+        val player = css.requirePlayer() ?: return
+        val card = CardCatalog.findByEntityType(mobType)
+        if (card == null) {
+            player.sendMessage(allTags.deserialize("<red>No card is configured for <white>${mobType.name}<red>."))
+            return
+        }
+
+        val validationError = Cards.validationErrorFor(boosterType, card)
+        if (validationError != null) {
+            player.sendMessage(allTags.deserialize("<red>$validationError"))
+            return
+        }
+
+        val result = Cards.openBoosterForced(player, boosterType, card)
+        if (result == null) {
+            player.sendMessage(allTags.deserialize("<red>Could not open forced debug pull."))
+            return
+        }
+
+        player.sendMessage(
+            allTags.deserialize("<gray>Debug pull -> <white>${result.definition.id}<gray>, rarity: <white>${result.rarity.name}<gray>, sub: <white>${result.subRarity.name}<gray>, global: <white>${result.globalPullCount}")
+        )
+    }
+
 }

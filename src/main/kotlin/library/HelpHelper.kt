@@ -29,6 +29,10 @@ object HelpHelper {
             listOf("/crates"),
             listOf("View the available crates.")
         ),
+        "boosters" to CommandHelp(
+            listOf("/boosters"),
+            listOf("View the available booster packs and preview card odds.")
+        ),
         "echo" to CommandHelp(
             listOf("/echo <message>"),
             listOf("Echo a message back to you.")
